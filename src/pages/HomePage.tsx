@@ -139,6 +139,7 @@ const HomePage = () => {
             muted
             loop
             playsInline
+            poster="/photo_6041962101854637592_y.jpg"
             className="w-full h-full object-cover scale-110 blur-[1px]"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/40 to-white" />
@@ -335,6 +336,7 @@ const HomePage = () => {
             loop
             playsInline
             preload="metadata"
+            poster="/photo_6041962101854637595_y.jpg"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-primary/20 backdrop-brightness-75" />
@@ -423,6 +425,7 @@ const HomePage = () => {
                   loop
                   playsInline
                   preload="metadata"
+                  poster="/photo_6041962101854637594_y.jpg"
                 />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex flex-col justify-end p-8">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
@@ -535,6 +538,7 @@ const HomePage = () => {
               loop
               playsInline
               preload="metadata"
+              poster="/photo_6041962101854637596_y.jpg"
               className="w-full h-full object-cover grayscale"
             />
             <div className="absolute inset-0 bg-primary/60 backdrop-blur-[2px]" />
