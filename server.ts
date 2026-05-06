@@ -281,7 +281,8 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server started in ${process.env.NODE_ENV || 'development'} mode`);
+    console.log(`📡 Listening on 0.0.0.0:${PORT}`);
   });
 }
 
