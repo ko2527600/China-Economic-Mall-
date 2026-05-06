@@ -26,6 +26,11 @@ const StoresPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
 
   useEffect(() => {
+    const q = searchParams.get('q');
+    if (q !== null) setSearch(q);
+  }, [searchParams]);
+
+  useEffect(() => {
     const fetchStores = async () => {
       try {
         const res = await fetch('/api/stores');
@@ -71,13 +76,13 @@ const StoresPage = () => {
             placeholder="Search stores, brands, or products..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="cem-input w-full h-14 pl-12 pr-6 group-focus-within:ring-primary/20"
+            className="bg-slate-50 border border-slate-100 rounded-2xl w-full h-16 pl-14 pr-6 outline-none focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all font-medium text-lg shadow-inner"
           />
-          <PiMagnifyingGlassBold className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-text group-focus-within:text-primary transition-colors" size={20} />
+          <PiMagnifyingGlassBold className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-text group-focus-within:text-primary transition-all duration-300" size={24} />
         </div>
-        <button className="h-14 px-8 cem-btn-outline flex items-center justify-center gap-3">
+        <button className="h-16 px-10 rounded-2xl border-2 border-slate-100 text-primary font-black uppercase tracking-widest text-[10px] hover:bg-slate-50 hover:border-primary/20 transition-all flex items-center justify-center gap-3 active:scale-95">
           <PiFunnelDuotone size={20} />
-          <span className="text-xs uppercase tracking-widest font-bold">Filters</span>
+          Filters
         </button>
       </div>
 

@@ -1,18 +1,33 @@
 
 import React from 'react';
 import { Tag, Calendar, ChevronRight, Bell, Sparkles } from 'lucide-react';
-import { PROMOTIONS, EVENTS, STORES } from '../data/mockData';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const PromotionsPage = () => {
   const [config, setConfig] = React.useState<any>(null);
+  const [promotions, setPromotions] = React.useState<any[]>([]);
+  const [events, setEvents] = React.useState<any[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(data => setConfig(data))
-      .catch(err => console.error(err));
+    const fetchData = async () => {
+      try {
+        const [configRes, promosRes, eventsRes] = await Promise.all([
+          fetch('/api/config'),
+          fetch('/api/promotions'),
+          fetch('/api/events')
+        ]);
+        setConfig(await configRes.json());
+        setPromotions(await promosRes.json());
+        setEvents(await eventsRes.json());
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   return (
@@ -51,8 +66,8 @@ const PromotionsPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-           {PROMOTIONS.map((promo, i) => {
-             const store = STORES.find(s => s.id === promo.storeId);
+           {promotions.map((promo, i) => {
+             const store = promo.store;
              return (
                <motion.div 
                 key={promo.id}
@@ -103,7 +118,7 @@ const PromotionsPage = () => {
         </div>
 
         <div className="flex flex-col gap-6">
-           {EVENTS.map(event => (
+           {events.map(event => (
              <div key={event.id} className="bg-white rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-8 border-2 border-slate-50 shadow-sm hover:border-yellow-400 transition-colors">
                 <div className="w-full sm:w-64 h-40 rounded-3xl overflow-hidden flex-shrink-0 border-4 border-slate-50 shadow-inner">
                    <img src={event.image} alt={event.title} className="w-full h-full object-cover" />

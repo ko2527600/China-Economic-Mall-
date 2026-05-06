@@ -1,14 +1,12 @@
 
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { 
   PiHouseDuotone, 
   PiStorefrontDuotone, 
   PiShoppingCartDuotone, 
   PiTagDuotone, 
   PiMedalDuotone, 
-  PiUserCircleDuotone, 
-  PiUserCircleFill,
   PiMagnifyingGlassDuotone,
   PiListBold,
   PiXBold 
@@ -23,7 +21,16 @@ function cn(...inputs: ClassValue[]) {
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchValue.trim()) {
+      setIsMobileMenuOpen(false);
+      navigate(`/products?q=${encodeURIComponent(searchValue.trim())}`);
+    }
+  };
 
   const navItems = [
     { icon: PiHouseDuotone, label: 'Home', path: '/' },
@@ -84,17 +91,20 @@ const Navbar = () => {
 
         {/* Right side Actions */}
         <div className="flex items-center gap-6 ml-8">
-          <div className="relative w-[220px]">
-            <PiMagnifyingGlassDuotone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-text" size={18} />
+          <div className="relative group">
+            <PiMagnifyingGlassDuotone 
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-text group-focus-within:text-primary transition-colors" 
+              size={18} 
+            />
             <input 
               type="text" 
-              placeholder="Search products..." 
-              className="cem-input w-full pl-10 h-10 text-xs shadow-inner"
+              placeholder="Search mall..." 
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={handleSearch}
+              className="bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-4 h-11 text-xs w-48 lg:w-64 focus:w-80 focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all outline-none font-medium shadow-inner"
             />
           </div>
-          <NavLink to="/profile" className={({ isActive }) => cn("transition-colors", isActive ? "text-primary" : "text-muted-text hover:text-primary")}>
-            {location.pathname === '/profile' ? <PiUserCircleFill size={26} /> : <PiUserCircleDuotone size={26} />}
-          </NavLink>
         </div>
       </nav>
 
@@ -129,7 +139,21 @@ const Navbar = () => {
             transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
             className="fixed inset-0 top-16 z-40 md:hidden bg-white px-6 py-8"
           >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-6">
+              {/* Mobile Search */}
+              <div className="relative mb-4">
+                <PiMagnifyingGlassDuotone className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-text" size={20} />
+                <input 
+                  type="text" 
+                  placeholder="Search stores, products..." 
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyDown={handleSearch}
+                  className="bg-slate-50 border border-slate-100 rounded-2xl w-full pl-12 pr-4 h-14 text-sm outline-none focus:bg-white focus:border-primary/20 transition-all font-medium"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <NavLink
                   key={item.path}
@@ -152,21 +176,9 @@ const Navbar = () => {
                   )}
                 </NavLink>
               ))}
-              <NavLink
-                to="/profile"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-4 p-4 rounded-2xl mt-4 transition-all border border-border-color",
-                    isActive ? "text-primary border-primary bg-primary/5" : "text-muted-text"
-                  )
-                }
-              >
-                {location.pathname === '/profile' ? <PiUserCircleFill size={24} /> : <PiUserCircleDuotone size={24} />}
-                <span className="font-bold text-sm">Account Settings</span>
-              </NavLink>
             </div>
-          </motion.div>
+          </div>
+        </motion.div>
         )}
       </AnimatePresence>
 

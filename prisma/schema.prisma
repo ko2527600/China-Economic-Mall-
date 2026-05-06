@@ -25,6 +25,7 @@ model Store {
   gallery     String[]  @default([])
   isFeatured  Boolean   @default(false)
   products    Product[]
+  promotions  Promotion[]
   reviews     Review[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -64,10 +65,32 @@ model SiteConfig {
   promoTitle         String   @default("Mid-Year Mega Sale")
   promoSubtitle      String   @default("Promotion")
   promoDiscount      String   @default("40%")
+  promoImage         String?
   loyaltyTitle       String   @default("Join Our Gold Rewards Tier")
   loyaltyDescription String   @default("Earn points on every purchase and get early access to major mall events, seasonal sales, and exclusive trade discounts.")
   contactPhone       String   @default("020 275 1082")
   contactAddress     String   @default("Darkuman, Accra, Ghana")
   openingHours       String   @default("07:30 - 21:30 DAILY")
   updatedAt          DateTime @updatedAt
+}
+
+model Promotion {
+  id             String   @id @default(cuid())
+  title          String
+  description    String
+  image          String
+  expirationDate DateTime
+  store          Store    @relation(fields: [storeId], references: [id])
+  storeId        String
+  createdAt      DateTime @default(now())
+}
+
+model MallEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String
+  date        DateTime
+  location    String
+  createdAt   DateTime @default(now())
 }

@@ -1,8 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import path from "path";
+import compression from "compression";
 import { fileURLToPath } from "url";
-import { createServer as createViteServer } from "vite";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
@@ -41,6 +41,7 @@ async function startServer() {
   const PORT = Number(process.env.PORT) || 3001;
 
   app.use(express.json());
+  app.use(compression());
   
   // Serve static files from public/uploads
   app.use("/uploads", express.static(uploadDir));
@@ -106,6 +107,7 @@ async function startServer() {
       const stores = await prisma.store.findMany({
         include: { 
           products: true,
+          promotions: true,
           reviews: true
         }
       });
@@ -194,8 +196,77 @@ async function startServer() {
     }
   });
 
+  // Promotions API
+  app.get("/api/promotions", async (req, res) => {
+    try {
+      const promotions = await prisma.promotion.findMany({
+        include: { store: true }
+      });
+      res.json(promotions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch promotions" });
+    }
+  });
+
+  app.post("/api/promotions", async (req, res) => {
+    try {
+      const promotion = await prisma.promotion.create({
+        data: req.body
+      });
+      res.json(promotion);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create promotion" });
+    }
+  });
+
+  app.delete("/api/promotions/:id", async (req, res) => {
+    try {
+      await prisma.promotion.delete({
+        where: { id: req.params.id }
+      });
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete promotion" });
+    }
+  });
+
+  // Events API
+  app.get("/api/events", async (req, res) => {
+    try {
+      const events = await prisma.mallEvent.findMany({
+        orderBy: { date: 'asc' }
+      });
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch events" });
+    }
+  });
+
+  app.post("/api/events", async (req, res) => {
+    try {
+      const event = await prisma.mallEvent.create({
+        data: req.body
+      });
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create event" });
+    }
+  });
+
+  app.delete("/api/events/:id", async (req, res) => {
+    try {
+      await prisma.mallEvent.delete({
+        where: { id: req.params.id }
+      });
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete event" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",

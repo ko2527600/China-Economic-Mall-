@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  PiDeviceMobile, 
-  PiTShirt, 
-  PiBasket, 
-  PiHouse, 
-  PiCookingPot, 
+import {
+  PiDeviceMobile,
+  PiTShirt,
+  PiBasket,
+  PiHouse,
+  PiCookingPot,
   PiArmchair,
   PiArrowRightBold,
   PiTrendUpBold,
@@ -22,6 +22,41 @@ import {
 } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
 import { PROMOTIONS } from '../data/mockData';
+
+const Typewriter = ({ text, delay = 100 }: { text: string, delay?: number }) => {
+  const [currentText, setCurrentText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    // Reset if text changes
+    setCurrentText('');
+    setCurrentIndex(0);
+  }, [text]);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setCurrentText(prevText => prevText + text[currentIndex]);
+        setCurrentIndex(prevIndex => prevIndex + 1);
+      }, delay);
+
+      return () => clearTimeout(timeout);
+    } else {
+      // Loop back after 3 seconds
+      const loopTimeout = setTimeout(() => {
+        setCurrentText('');
+        setCurrentIndex(0);
+      }, 3000);
+      return () => clearTimeout(loopTimeout);
+    }
+  }, [currentIndex, delay, text]);
+
+  return (
+    <span style={{ whiteSpace: 'pre-line' }} className={currentIndex < text.length ? 'typewriter-text' : ''}>
+      {currentText}
+    </span>
+  );
+};
 
 const HomePage = () => {
   const [dbStores, setDbStores] = useState<any[]>([]);
@@ -95,26 +130,26 @@ const HomePage = () => {
       <section className="relative min-h-[88vh] flex items-center overflow-hidden pt-12 md:pt-0">
         {/* Background Atmosphere */}
         <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-transparent via-primary/40 to-transparent z-20 hidden md:block" />
-        
+
         {/* Video Atmosphere */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
-           <video 
-             src={config?.heroVideo || "/Mall 1.mp4"} 
-             autoPlay 
-             muted 
-             loop 
-             playsInline
-             className="w-full h-full object-cover scale-110 blur-[1px]"
-           />
-           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/40 to-white" />
+          <video
+            src={config?.heroVideo || "/Mall 1.mp4"}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover scale-110 blur-[1px]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-white via-white/40 to-white" />
         </div>
 
         <div className="absolute inset-0 z-0">
-          <div 
+          <div
             className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full opacity-10 blur-[120px]"
             style={{ background: 'radial-gradient(circle, var(--color-primary) 0%, transparent 70%)' }}
           />
-          <div 
+          <div
             className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full opacity-5 blur-[100px]"
             style={{ background: 'radial-gradient(circle, var(--color-secondary) 0%, transparent 70%)' }}
           />
@@ -122,29 +157,21 @@ const HomePage = () => {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Column: Content */}
-          <motion.div 
+          <motion.div
             initial={{ x: -30, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="flex flex-col"
           >
             <span className="cem-section-label mb-4">{config?.heroSubtitle || "Accra's Premier Trade Destination"}</span>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-6 uppercase italic">
-              {config?.heroTitle ? (
-                <>
-                  {config.heroTitle.split(' ').slice(0, -1).join(' ')} <br/>
-                  <span className="cem-gradient-text uppercase">{config.heroTitle.split(' ').slice(-1)}</span>
-                </>
-              ) : (
-                <>
-                  China <br/>
-                  <span className="cem-gradient-text uppercase">Economic</span> <br/>
-                  Mall
-                </>
-              )}
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[1.1] tracking-tighter mb-6 uppercase italic min-h-[3em]">
+              <Typewriter
+                text={config?.heroTitle ? config.heroTitle.replace(/ /g, '\n') : "China\nEconomic\nMall"}
+                delay={150}
+              />
             </h1>
             <div className="cem-divider mb-8" />
-            
+
             <p className="text-muted-text text-lg md:text-xl font-medium leading-relaxed max-w-xl mb-10">
               {config?.heroDescription || "Hundreds of stores. Unbeatable prices. From cutting-edge electronics to high-street fashion — discover everything you need all under one roof."}
             </p>
@@ -165,7 +192,7 @@ const HomePage = () => {
                 { val: '10K+', lab: 'Products' },
                 { val: 'Daily', lab: 'Hot Deals' }
               ].map((stat, i) => (
-                <motion.div 
+                <motion.div
                   key={stat.lab}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -192,22 +219,23 @@ const HomePage = () => {
             <div className="cem-card overflow-hidden relative group shadow-gold">
               <div className="aspect-[4/5] md:aspect-[4/4] overflow-hidden">
                 <AnimatePresence mode="wait">
-                  <motion.img 
+                  <motion.img
                     key={currentHeroImage}
-                    src={heroImages[currentHeroImage]} 
-                    alt="China Economics Mall" 
+                    src={heroImages[currentHeroImage]}
+                    alt="China Economics Mall"
                     initial={{ opacity: 0, scale: 1.1 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 1.2, ease: "easeOut" }}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </AnimatePresence>
               </div>
 
               {/* Slider Overlays */}
               <div className="absolute inset-0 bg-gradient-to-t from-primary-bg via-transparent to-transparent opacity-80" />
-              
+
               <div className="absolute bottom-6 left-6 flex items-center gap-3">
                 <span className="cem-badge-gold">Now Open</span>
                 <span className="text-[10px] text-body-text/60 font-black uppercase tracking-widest bg-white/5 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
@@ -218,8 +246,8 @@ const HomePage = () => {
               {/* Progress dots inside card */}
               <div className="absolute bottom-6 right-6 flex gap-1.5">
                 {heroImages.map((_, idx) => (
-                  <div 
-                    key={idx} 
+                  <div
+                    key={idx}
                     className={`h-1 rounded-full transition-all duration-500 ${idx === currentHeroImage ? 'w-6 bg-primary' : 'w-1.5 bg-black/10'}`}
                   />
                 ))}
@@ -245,7 +273,7 @@ const HomePage = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {categories.map((cat, i) => (
-            <motion.div 
+            <motion.div
               key={cat.name}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -278,21 +306,21 @@ const HomePage = () => {
               <div key={i} className="aspect-square bg-card-surface animate-pulse rounded-2xl" />
             ))
           ) : dbProducts.slice(0, 4).map((product) => (
-             <Link key={product.id} to="/products" className="cem-card flex flex-col group p-2 interactive-hover overflow-hidden">
-                <div className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-slate-50">
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" />
-                  <div className="absolute top-2 left-2 px-2 py-0.5 bg-accent text-white font-black text-[8px] rounded uppercase">Hot</div>
+            <Link key={product.id} to="/products" className="cem-card flex flex-col group p-2 interactive-hover overflow-hidden">
+              <div className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-slate-50">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" loading="lazy" />
+                <div className="absolute top-2 left-2 px-2 py-0.5 bg-accent text-white font-black text-[8px] rounded uppercase">Hot</div>
+              </div>
+              <div className="px-3 pb-3">
+                <h3 className="font-display font-semibold text-sm text-body-text uppercase tracking-tight mb-2 truncate group-hover:text-primary transition-colors">{product.name}</h3>
+                <div className="flex items-center justify-between">
+                  <p className="text-primary font-bold text-base">{product.price}</p>
+                  <div className="p-2 bg-elevated-surface rounded-lg group-hover:bg-primary group-hover:text-white transition-all">
+                    <PiShoppingCartBold size={16} />
+                  </div>
                 </div>
-                <div className="px-3 pb-3">
-                   <h3 className="font-display font-semibold text-sm text-body-text uppercase tracking-tight mb-2 truncate group-hover:text-primary transition-colors">{product.name}</h3>
-                   <div className="flex items-center justify-between">
-                      <p className="text-primary font-bold text-base">{product.price}</p>
-                      <div className="p-2 bg-elevated-surface rounded-lg group-hover:bg-primary group-hover:text-white transition-all">
-                        <PiShoppingCartBold size={16} />
-                      </div>
-                   </div>
-                </div>
-             </Link>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -300,29 +328,31 @@ const HomePage = () => {
       {/* Parallax Video Break */}
       <section className="relative h-[50vh] md:h-[65vh] w-full overflow-hidden flex items-center justify-center my-12">
         <div className="absolute inset-0 z-0">
-          <video 
-            src="/Mall 3.mp4" 
-            autoPlay 
-            muted 
-            loop 
+          <video
+            src="/Mall 3.mp4"
+            autoPlay
+            muted
+            loop
             playsInline
+            preload="metadata"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-primary/20 backdrop-brightness-75" />
         </div>
         <div className="relative z-10 text-center px-6">
-           <motion.div
-             initial={{ opacity: 0, y: 30 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ duration: 0.8 }}
-           >
-             <span className="text-secondary font-black text-xs uppercase tracking-[0.5em] mb-4 block">Unmatched Scale</span>
-             <h2 className="text-white text-4xl md:text-7xl lg:text-8xl font-display font-black uppercase italic tracking-tighter leading-[0.85]">
-               The Heart of <br/>
-               <span className="text-secondary">West African Trade</span>
-             </h2>
-           </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="text-secondary font-black text-xs uppercase tracking-[0.5em] mb-4 block min-h-[1.5em]">
+              <Typewriter text="Unmatched Scale" delay={150} />
+            </span>
+            <h2 className="text-white text-4xl md:text-7xl lg:text-8xl font-display font-black uppercase italic tracking-tighter leading-[0.85] min-h-[2.5em]">
+              <Typewriter text="The Heart of West African Trade" delay={120} />
+            </h2>
+          </motion.div>
         </div>
       </section>
 
@@ -368,30 +398,31 @@ const HomePage = () => {
           </div>
         </div>
         <div className="relative overflow-hidden -mx-6">
-          <motion.div 
+          <motion.div
             className="flex gap-6 px-6 w-max"
-            animate={{ 
-              x: [0, -((480 + 24) * mallVideos.length)] 
+            animate={{
+              x: [0, -((480 + 24) * mallVideos.length)]
             }}
-            transition={{ 
-              duration: 30, 
-              repeat: Infinity, 
-              ease: "linear" 
+            transition={{
+              duration: 30,
+              repeat: Infinity,
+              ease: "linear"
             }}
           >
             {[...mallVideos, ...mallVideos].map((video, idx) => (
-              <motion.div 
+              <motion.div
                 key={`${video.id}-${idx}`}
                 className="relative flex-shrink-0 w-[300px] md:w-[480px] aspect-video rounded-[2.5rem] overflow-hidden group cursor-pointer border border-border-color shadow-2xl"
                 onClick={() => setActiveVideo(video.src)}
               >
-                <video 
-                  src={video.src} 
+                <video
+                  src={video.src}
                   className="w-full h-full object-cover"
                   autoPlay
                   muted
                   loop
                   playsInline
+                  preload="metadata"
                 />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex flex-col justify-end p-8">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
@@ -413,27 +444,27 @@ const HomePage = () => {
       {/* Video Modal */}
       <AnimatePresence>
         {activeVideo && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-primary-bg/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12"
             onClick={() => setActiveVideo(null)}
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="relative aspect-[9/16] max-h-full rounded-3xl overflow-hidden border border-white/10 shadow-gold"
               onClick={(e) => e.stopPropagation()}
             >
-              <video 
-                src={activeVideo} 
+              <video
+                src={activeVideo}
                 className="w-full h-full object-contain"
                 controls
                 autoPlay
               />
-              <button 
+              <button
                 onClick={() => setActiveVideo(null)}
                 className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-gold-accent text-white rounded-full flex items-center justify-center backdrop-blur-xl border border-white/20 z-10 transition-all"
               >
@@ -451,37 +482,42 @@ const HomePage = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {isLoading ? (
-             Array(3).fill(0).map((_, i) => (
-               <div key={i} className="aspect-video bg-card-surface animate-pulse rounded-[2.5rem]" />
-             ))
+            Array(3).fill(0).map((_, i) => (
+              <div key={i} className="aspect-video bg-card-surface animate-pulse rounded-[2.5rem]" />
+            ))
           ) : featuredStores.length > 0 ? (
             featuredStores.map((store) => (
               <Link key={store.id} to={`/stores/${store.id}`} className="cem-card flex flex-col group overflow-hidden border-none shadow-xl">
-              <div className="relative aspect-video overflow-hidden">
-                <img src={store.image} alt={store.name} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" />
-                <div className="absolute top-4 left-4 bg-primary-bg/80 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/5 shadow-lg">
-                  <PiStarFill size={14} className="text-gold-accent" />
-                  <span className="text-xs font-black text-body-text">{store.rating}</span>
-                </div>
-              </div>
-              <div className="p-6 pb-8 flex-1 flex flex-col bg-card-surface">
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="font-display font-bold text-xl text-body-text leading-tight uppercase tracking-tight group-hover:text-gold-accent transition-colors">{store.name}</h3>
-                  <div className="w-10 h-10 rounded-xl bg-elevated-surface p-1 border border-border-color flex-shrink-0">
-                    <img src={store.logo} alt="" className="w-full h-full object-contain" />
+                <div className="relative aspect-video overflow-hidden">
+                  <img 
+                    src={store.image} 
+                    alt={store.name} 
+                    className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" 
+                    loading="lazy"
+                  />
+                  <div className="absolute top-4 left-4 bg-primary-bg/80 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/5 shadow-lg">
+                    <PiStarFill size={14} className="text-gold-accent" />
+                    <span className="text-xs font-black text-body-text">{store.rating}</span>
                   </div>
                 </div>
-                <div className="cem-badge-gold w-fit mb-6">{store.category}</div>
-                <div className="flex items-center gap-2 text-muted-text/60 text-[10px] font-black uppercase tracking-[0.2em] mt-auto pt-6 border-t border-border-color">
-                   <PiMapPinFill size={16} className="text-gold-accent" />
-                   <span>{store.location}</span>
+                <div className="p-6 pb-8 flex-1 flex flex-col bg-card-surface">
+                  <div className="flex items-start justify-between mb-4">
+                    <h3 className="font-display font-bold text-xl text-body-text leading-tight uppercase tracking-tight group-hover:text-gold-accent transition-colors">{store.name}</h3>
+                    <div className="w-10 h-10 rounded-xl bg-elevated-surface p-1 border border-border-color flex-shrink-0">
+                      <img src={store.logo} alt="" className="w-full h-full object-contain" loading="lazy" />
+                    </div>
+                  </div>
+                  <div className="cem-badge-gold w-fit mb-6">{store.category}</div>
+                  <div className="flex items-center gap-2 text-muted-text/60 text-[10px] font-black uppercase tracking-[0.2em] mt-auto pt-6 border-t border-border-color">
+                    <PiMapPinFill size={16} className="text-gold-accent" />
+                    <span>{store.location}</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))
+              </Link>
+            ))
           ) : (
             <div className="col-span-full py-20 text-center text-muted-text font-black uppercase tracking-widest bg-card-surface rounded-[2.5rem] border border-dashed border-border-color">
-               No featured stores yet
+              No featured stores yet
             </div>
           )}
         </div>
@@ -492,30 +528,31 @@ const HomePage = () => {
         <div className="bg-primary border border-primary/20 rounded-[3rem] p-12 md:p-20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 shadow-2xl">
           {/* Background Video for CTA */}
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-             <video 
-               src="/Mall 5.mp4" 
-               autoPlay 
-               muted 
-               loop 
-               playsInline
-               className="w-full h-full object-cover grayscale"
-             />
-             <div className="absolute inset-0 bg-primary/60 backdrop-blur-[2px]" />
+            <video
+              src="/Mall 5.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="w-full h-full object-cover grayscale"
+            />
+            <div className="absolute inset-0 bg-primary/60 backdrop-blur-[2px]" />
           </div>
 
           {/* Subtle Glows inside CTA */}
           <div className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-[100px] z-10" />
-          
+
           <div className="relative z-10 max-w-lg">
             <span className="text-secondary font-black text-xs uppercase tracking-[0.4em] mb-6 block">Membership Status</span>
             <h2 className="text-4xl md:text-6xl font-display font-black mb-6 leading-[0.9] uppercase italic text-white">
               {config?.loyaltyTitle ? (
                 <>
-                  {config.loyaltyTitle.split(' ').slice(0, -2).join(' ')} <br/>
+                  {config.loyaltyTitle.split(' ').slice(0, -2).join(' ')} <br />
                   <span className="text-secondary uppercase">{config.loyaltyTitle.split(' ').slice(-2).join(' ')}</span>
                 </>
               ) : (
-                <>Join Our Gold <br/><span className="text-secondary uppercase">Rewards Tier</span></>
+                <>Join Our Gold <br /><span className="text-secondary uppercase">Rewards Tier</span></>
               )}
             </h2>
             <p className="text-white/70 text-lg mb-10 font-medium leading-relaxed">{config?.loyaltyDescription || "Earn points on every purchase and get early access to major mall events, seasonal sales, and exclusive trade discounts."}</p>
@@ -526,14 +563,14 @@ const HomePage = () => {
           <div className="relative z-10 w-full md:w-auto flex flex-col items-center">
             <PiMedalBold className="text-white/5 -rotate-12 absolute -z-10" size={400} />
             <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-10 rounded-[2.5rem] text-center w-full max-w-[320px] shadow-2xl">
-               <p className="text-5xl font-display font-black text-secondary tracking-tighter mb-2">1,240</p>
-               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">Current Member Pts</p>
-               <div className="mt-8 pt-8 border-t border-white/10">
-                 <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full w-[65%] bg-secondary shadow-lg shadow-secondary/20" />
-                 </div>
-                 <p className="text-[9px] font-black uppercase text-secondary mt-3">65% to Gold Status</p>
-               </div>
+              <p className="text-5xl font-display font-black text-secondary tracking-tighter mb-2">1,240</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">Current Member Pts</p>
+              <div className="mt-8 pt-8 border-t border-white/10">
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full w-[65%] bg-secondary shadow-lg shadow-secondary/20" />
+                </div>
+                <p className="text-[9px] font-black uppercase text-secondary mt-3">65% to Gold Status</p>
+              </div>
             </div>
           </div>
         </div>

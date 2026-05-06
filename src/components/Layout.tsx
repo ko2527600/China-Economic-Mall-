@@ -40,25 +40,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       {/* Footer for desktop */}
-      <footer className="hidden md:block bg-primary text-white py-20 px-6 mt-12 border-t-8 border-secondary">
+      <footer className="hidden md:block bg-primary text-white py-10 px-6 border-t-8 border-secondary">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-2">
-            <h3 className="text-3xl font-black mb-4 uppercase tracking-tighter italic">
+            <h3 className="text-2xl font-black mb-4 uppercase tracking-tighter italic">
               {config?.heroTitle || "CHINA ECONOMIC MALL"}
             </h3>
-            <p className="text-white/40 text-sm leading-relaxed max-w-md font-medium">
-              {config?.heroDescription?.substring(0, 160) + "..." || "Ghana's leading destination for affordable wholesale and retail commerce. We bridge the gap between quality international goods and the Ghanaian household."}
+            <p className="text-white/40 text-[10px] leading-relaxed max-w-md font-black uppercase tracking-widest">
+              {config?.heroDescription?.substring(0, 140) + "..." || "Ghana's leading destination for affordable wholesale and retail commerce."}
             </p>
-            <div className="flex gap-4 mt-8">
-               <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-accent transition-colors cursor-pointer border border-white/5">
-                  <Globe size={20} />
+            <div className="flex gap-4 mt-6">
+               <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center hover:bg-accent transition-colors cursor-pointer border border-white/5">
+                  <Globe size={16} />
                </div>
-               {/* Add other socials if needed */}
             </div>
           </div>
           <div>
-            <h4 className="text-[10px] font-black mb-6 uppercase tracking-[0.3em] text-secondary">Quick Access</h4>
-            <ul className="space-y-4 text-xs font-black uppercase tracking-widest text-white/60">
+            <h4 className="text-[10px] font-black mb-4 uppercase tracking-[0.3em] text-secondary">Quick Access</h4>
+            <ul className="space-y-3 text-[10px] font-black uppercase tracking-widest text-white/50">
               <li><a href="/stores" className="hover:text-white transition-colors">Directory</a></li>
               <li><a href="/promotions" className="hover:text-white transition-colors">Hot Deals</a></li>
               <li><a href="/loyalty" className="hover:text-white transition-colors">Rewards</a></li>
@@ -66,14 +65,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </ul>
           </div>
           <div>
-            <h4 className="text-[10px] font-black mb-6 uppercase tracking-[0.3em] text-secondary">Darkuman Hub</h4>
-            <p className="text-xs font-black uppercase tracking-widest text-white/60 mb-2">{config?.contactAddress || "Darkuman, Accra, Ghana"}</p>
-            <p className="text-xs font-black uppercase tracking-widest text-white/60">{config?.openingHours || "07:30 - 21:30 DAILY"}</p>
-            <p className="text-sm font-black text-secondary mt-6 uppercase tracking-tighter">{config?.contactPhone || "020 275 1082"}</p>
+            <h4 className="text-[10px] font-black mb-4 uppercase tracking-[0.3em] text-secondary">Darkuman Hub</h4>
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">{config?.contactAddress || "Darkuman, Accra, Ghana"}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/50">{config?.openingHours || "07:30 - 21:30 DAILY"}</p>
+            <p className="text-xs font-black text-secondary mt-4 uppercase tracking-tighter">{config?.contactPhone || "020 275 1082"}</p>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto border-t border-white/5 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-white/30">
-          <p>© 2026 {config?.heroTitle || "CHINA ECONOMIC MALL"} DARKUMAN</p>
+        <div className="max-w-7xl mx-auto border-t border-white/5 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] font-black uppercase tracking-[0.4em] text-white/20">
+          <p>© 2026 {config?.heroTitle || "CHINA ECONOMIC MALL"}</p>
           <p>BUILT FOR EXCELLENCE IN GHANA</p>
         </div>
       </footer>

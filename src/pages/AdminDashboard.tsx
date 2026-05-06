@@ -15,7 +15,10 @@ import {
   Search,
   Filter,
   Star,
-  Settings
+  Settings,
+  Tag,
+  Calendar,
+  Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -162,7 +165,9 @@ const AdminDashboard = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'stores' | 'products' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'stores' | 'products' | 'settings' | 'promotions' | 'events'>('overview');
+  const [promotions, setPromotions] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState<{message: string, type: 'success' | 'error'} | null>(null);
@@ -174,7 +179,7 @@ const AdminDashboard = () => {
     }
   }, [feedback]);
   const [currentEdit, setCurrentEdit] = useState<any>(null);
-  const [modalType, setModalType] = useState<'store' | 'product'>('store');
+  const [modalType, setModalType] = useState<'store' | 'product' | 'promotion' | 'event'>('store');
 
   useEffect(() => {
     fetchData();
@@ -183,17 +188,23 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [storesRes, productsRes, configRes] = await Promise.all([
+      const [storesRes, productsRes, configRes, promosRes, eventsRes] = await Promise.all([
         fetch('/api/stores'),
         fetch('/api/products'),
-        fetch('/api/config')
+        fetch('/api/config'),
+        fetch('/api/promotions'),
+        fetch('/api/events')
       ]);
       const storesData = await storesRes.json();
       const productsData = await productsRes.json();
       const configData = await configRes.json();
+      const promosData = await promosRes.json();
+      const eventsData = await eventsRes.json();
       setStores(storesData);
       setProducts(productsData);
       setConfig(configData);
+      setPromotions(promosData);
+      setEvents(eventsData);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -217,7 +228,13 @@ const AdminDashboard = () => {
         (data as any).isNewArrival = (data as any).isNewArrival === 'on';
     }
 
-    const endpoint = modalType === 'store' ? '/api/stores' : '/api/products';
+    const endpointMap: Record<string, string> = {
+      store: '/api/stores',
+      product: '/api/products',
+      promotion: '/api/promotions',
+      event: '/api/events'
+    };
+    const endpoint = endpointMap[modalType];
     const url = currentEdit ? `${endpoint}/${currentEdit.id}` : endpoint;
     const method = currentEdit ? 'PUT' : 'POST';
     
@@ -241,10 +258,16 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDelete = async (type: 'store' | 'product', id: string) => {
+  const handleDelete = async (type: 'store' | 'product' | 'promotion' | 'event', id: string) => {
     if (!confirm(`Are you sure you want to delete this ${type}?`)) return;
     
-    const endpoint = type === 'store' ? '/api/stores' : '/api/products';
+    const endpointMap: Record<string, string> = {
+      store: '/api/stores',
+      product: '/api/products',
+      promotion: '/api/promotions',
+      event: '/api/events'
+    };
+    const endpoint = endpointMap[type];
     try {
       const response = await fetch(`${endpoint}/${id}`, { method: 'DELETE' });
       if (response.ok) {
@@ -310,6 +333,8 @@ const AdminDashboard = () => {
             { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
             { id: 'stores', icon: StoreIcon, label: 'Manage Stores' },
             { id: 'products', icon: ShoppingBag, label: 'Manage Products' },
+            { id: 'promotions', icon: Tag, label: 'Manage Deals' },
+            { id: 'events', icon: Sparkles, label: 'Manage Events' },
             { id: 'settings', icon: Settings, label: 'Site Settings' },
           ].map((item) => (
             <button
@@ -350,6 +375,8 @@ const AdminDashboard = () => {
                {activeTab === 'overview' && "Dashboard Overview"}
                {activeTab === 'stores' && "Store Inventory"}
                {activeTab === 'products' && "Product Catalog"}
+               {activeTab === 'promotions' && "Store Promotions"}
+               {activeTab === 'events' && "Mall Events"}
                {activeTab === 'settings' && "Site Configuration"}
             </h2>
             <p className="text-slate-400 text-sm font-medium">Manage and monitor mall operations in real-time.</p>
@@ -393,6 +420,26 @@ const AdminDashboard = () => {
               className="bg-secondary text-primary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-secondary/20 hover:scale-105 transition-all flex items-center gap-2"
             >
                <Plus size={16} /> New Product
+             </button>
+             <button 
+              onClick={() => {
+                setModalType('promotion');
+                setCurrentEdit(null);
+                setIsModalOpen(true);
+              }}
+              className="bg-accent text-white px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all flex items-center gap-2"
+            >
+               <Plus size={16} /> New Deal
+             </button>
+             <button 
+              onClick={() => {
+                setModalType('event');
+                setCurrentEdit(null);
+                setIsModalOpen(true);
+              }}
+              className="bg-white border-2 border-slate-900 text-slate-900 px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white transition-all flex items-center gap-2"
+            >
+               <Plus size={16} /> New Event
              </button>
           </div>
         </header>
@@ -540,6 +587,94 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {activeTab === 'promotions' && (
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+             <table className="w-full text-left">
+               <thead>
+                 <tr className="bg-slate-50 border-b border-slate-100">
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Deal Info</th>
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Store</th>
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Expiration</th>
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Actions</th>
+                 </tr>
+               </thead>
+               <tbody className="divide-y divide-slate-100">
+                  {promotions.map(promo => (
+                    <tr key={promo.id} className="group hover:bg-slate-50/50 transition-colors">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <img src={promo.image} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                          <div>
+                            <p className="font-black text-sm uppercase tracking-tight">{promo.title}</p>
+                            <p className="text-xs text-slate-400 font-medium line-clamp-1">{promo.description}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <span className="text-xs font-black uppercase tracking-tight text-slate-700">{promo.store?.name}</span>
+                      </td>
+                      <td className="px-8 py-6">
+                        <span className="text-xs font-black uppercase tracking-tight text-slate-400">{new Date(promo.expirationDate).toLocaleDateString()}</span>
+                      </td>
+                      <td className="px-8 py-6 text-right">
+                         <button 
+                          onClick={() => handleDelete('promotion', promo.id)}
+                          className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                         >
+                          <Trash2 size={18} />
+                         </button>
+                      </td>
+                    </tr>
+                  ))}
+               </tbody>
+             </table>
+          </div>
+        )}
+
+        {activeTab === 'events' && (
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+             <table className="w-full text-left">
+               <thead>
+                 <tr className="bg-slate-50 border-b border-slate-100">
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Event Info</th>
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Date</th>
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Location</th>
+                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Actions</th>
+                 </tr>
+               </thead>
+               <tbody className="divide-y divide-slate-100">
+                  {events.map(event => (
+                    <tr key={event.id} className="group hover:bg-slate-50/50 transition-colors">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <img src={event.image} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                          <div>
+                            <p className="font-black text-sm uppercase tracking-tight">{event.title}</p>
+                            <p className="text-xs text-slate-400 font-medium line-clamp-1">{event.description}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <span className="text-xs font-black uppercase tracking-tight text-slate-400">{new Date(event.date).toLocaleDateString()}</span>
+                      </td>
+                      <td className="px-8 py-6">
+                        <span className="text-xs font-black uppercase tracking-tight text-slate-700">{event.location}</span>
+                      </td>
+                      <td className="px-8 py-6 text-right">
+                         <button 
+                          onClick={() => handleDelete('event', event.id)}
+                          className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                         >
+                          <Trash2 size={18} />
+                         </button>
+                      </td>
+                    </tr>
+                  ))}
+               </tbody>
+             </table>
+          </div>
+        )}
+
         {activeTab === 'settings' && config && (
           <form onSubmit={handleUpdateConfig} className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-10 max-w-4xl">
             <div className="space-y-12">
@@ -656,7 +791,11 @@ const AdminDashboard = () => {
               <div className="bg-slate-50 p-8 border-b border-slate-100 sticky top-0 z-20 flex items-center justify-between">
                 <div>
                   <h3 className="text-2xl font-black uppercase tracking-tighter italic">
-                    {currentEdit ? 'Edit' : 'Create New'} {modalType === 'store' ? 'Store' : 'Product'}
+                    {currentEdit ? 'Edit' : 'Create New'} {
+                      modalType === 'store' ? 'Store' : 
+                      modalType === 'product' ? 'Product' : 
+                      modalType === 'promotion' ? 'Promotion' : 'Event'
+                    }
                   </h3>
                   <p className="text-xs font-bold uppercase text-slate-400 tracking-widest mt-1">Fill in the details below</p>
                 </div>
@@ -725,7 +864,7 @@ const AdminDashboard = () => {
                          <label htmlFor="isFeatured" className="text-xs font-black uppercase tracking-widest text-primary">Feature this store on home page</label>
                       </div>
                     </>
-                  ) : (
+                  ) : modalType === 'product' ? (
                     <>
                       <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Product Name</label>
@@ -753,6 +892,60 @@ const AdminDashboard = () => {
                       <div className="md:col-span-2">
                         <ImageUploadField 
                           label="Product Image" 
+                          name="image" 
+                          defaultValue={currentEdit?.image} 
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2 md:col-span-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>
+                        <textarea name="description" defaultValue={currentEdit?.description} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[80px]" />
+                      </div>
+                    </>
+                  ) : modalType === 'promotion' ? (
+                    <>
+                      <div className="flex flex-col gap-2 md:col-span-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promotion Title</label>
+                        <input name="title" required defaultValue={currentEdit?.title} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Target Store</label>
+                        <select name="storeId" required defaultValue={currentEdit?.storeId} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold appearance-none">
+                           {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Expiration Date</label>
+                        <input type="date" name="expirationDate" required defaultValue={currentEdit?.expirationDate ? new Date(currentEdit.expirationDate).toISOString().split('T')[0] : ''} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <ImageUploadField 
+                          label="Deal Image" 
+                          name="image" 
+                          defaultValue={currentEdit?.image} 
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2 md:col-span-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>
+                        <textarea name="description" defaultValue={currentEdit?.description} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[80px]" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex flex-col gap-2 md:col-span-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Event Title</label>
+                        <input name="title" required defaultValue={currentEdit?.title} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Event Date</label>
+                        <input type="date" name="date" required defaultValue={currentEdit?.date ? new Date(currentEdit.date).toISOString().split('T')[0] : ''} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Location</label>
+                        <input name="location" required defaultValue={currentEdit?.location} placeholder="e.g. Main Atrium" className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <ImageUploadField 
+                          label="Event Banner" 
                           name="image" 
                           defaultValue={currentEdit?.image} 
                         />
