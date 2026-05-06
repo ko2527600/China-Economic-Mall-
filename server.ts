@@ -19,6 +19,14 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Helper to shrink Unsplash images for mobile performance
+function shrinkUnsplash(obj: any): any {
+  const json = JSON.stringify(obj);
+  // Replace w=800 or w=1000 or w=something with w=400
+  const optimized = json.replace(/w=\d+/g, 'w=400');
+  return JSON.parse(optimized);
+}
+
 // Multer config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -111,7 +119,7 @@ async function startServer() {
           reviews: true
         }
       });
-      res.json(stores);
+      res.json(shrinkUnsplash(stores));
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch stores" });
     }
@@ -156,7 +164,7 @@ async function startServer() {
       const products = await prisma.product.findMany({
         include: { store: true }
       });
-      res.json(products);
+      res.json(shrinkUnsplash(products));
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch products" });
     }
