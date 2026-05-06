@@ -1,0 +1,9 @@
+{
+  "name": "China Economics Mall Darkuman",
+  "description": "A Progressive Web App for discovering stores, products, promotions, and loyalty rewards at the China Economics Mall in Darkuman, Accra.",
+  "requestFramePermissions": [
+    "geolocation",
+    "notifications"
+  ],
+  "majorCapabilities": []
+}

@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Color Palette */
+  --color-primary-bg: #0a0a0f;
+  --color-card-surface: #111118;
+  --color-elevated-surface: #1a1a24;
+  --color-gold-accent: #c9a84c;
+  --color-light-gold: #e8c97a;
+  --color-muted-gold: #7a6330;
+  --color-action-red: #e8472a;
+  --color-body-text: #f0ede6;
+  --color-muted-text: #8a8578;
+  --color-border-color: #2a2a36;
+  
+  /* Typography */
+  --font-display: "Playfair Display", serif;
+  --font-body: "DM Sans", sans-serif;
+
+  /* Extras */
+  --radius-xl: 1.25rem;
+  --shadow-gold: 0 4px 20px -5px rgba(201, 168, 76, 0.2);
+}
+
+@layer base {
+  body {
+    @apply bg-primary-bg text-body-text font-body antialiased;
+  }
+  
+  h1, h2, h3 {
+    @apply font-display font-bold;
+  }
+}
+
+/* CEM Professional Utility Classes */
+
+.cem-card {
+  @apply bg-card-surface border border-border-color rounded-xl transition-all duration-300;
+}
+.cem-card:hover {
+  @apply border-muted-gold -translate-y-[3px] shadow-gold;
+}
+
+.cem-btn-primary {
+  @apply bg-gold-accent text-primary-bg px-7 py-3 rounded-[0.75rem] font-semibold transition-all hover:bg-light-gold active:scale-95;
+}
+
+.cem-btn-outline {
+  @apply bg-transparent text-gold-accent border border-muted-gold px-7 py-3 rounded-[0.75rem] font-medium transition-all hover:bg-gold-accent/5;
+}
+
+.cem-badge-gold {
+  @apply px-2.5 py-0.5 rounded-full bg-gold-accent/10 text-light-gold border border-gold-accent/30 text-[10px] font-bold uppercase tracking-wider;
+}
+
+.cem-badge-red {
+  @apply px-2.5 py-0.5 rounded-full bg-action-red/10 text-action-red border border-action-red/30 text-[10px] font-bold uppercase tracking-wider;
+}
+
+.cem-badge-new {
+  @apply px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider;
+}
+
+.cem-section-label {
+  @apply text-[10px] uppercase tracking-[0.3em] text-gold-accent font-body font-medium;
+}
+
+.cem-divider {
+  @apply w-12 h-[2px] bg-gradient-to-r from-gold-accent to-transparent block my-4;
+}
+
+.cem-pill {
+  @apply px-5 py-2 rounded-full bg-elevated-surface text-muted-text border border-transparent transition-all cursor-pointer text-xs font-medium;
+}
+.cem-pill:hover, .cem-pill.active {
+  @apply bg-gold-accent/10 text-light-gold border-gold-accent/50;
+}
+
+.cem-input {
+  @apply bg-elevated-surface border border-border-color rounded-[0.75rem] px-4 py-3 text-[#f0ede6] outline-none transition-all focus:border-gold-accent/60 focus:ring-1 focus:ring-gold-accent/20;
+}
+
+.cem-gradient-text {
+  @apply bg-gradient-to-br from-gold-accent to-light-gold bg-clip-text text-transparent;
+}
