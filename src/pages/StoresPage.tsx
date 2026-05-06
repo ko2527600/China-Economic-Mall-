@@ -1,6 +1,14 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, Star, MapPin, ChevronRight, Clock } from 'lucide-react';
+import { 
+  PiMagnifyingGlassDuotone, 
+  PiFunnelDuotone, 
+  PiStarFill, 
+  PiMapPinFill, 
+  PiArrowRightBold, 
+  PiClockDuotone,
+  PiMagnifyingGlassBold
+} from 'react-icons/pi';
 import { Category } from '../types';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -63,12 +71,12 @@ const StoresPage = () => {
             placeholder="Search stores, brands, or products..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="cem-input w-full h-14 pl-12 pr-6 group-focus-within:shadow-[0_0_20px_rgba(201,168,76,0.1)]"
+            className="cem-input w-full h-14 pl-12 pr-6 group-focus-within:ring-primary/20"
           />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-text group-focus-within:text-gold-accent transition-colors" size={20} />
+          <PiMagnifyingGlassBold className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-text group-focus-within:text-primary transition-colors" size={20} />
         </div>
         <button className="h-14 px-8 cem-btn-outline flex items-center justify-center gap-3">
-          <Filter size={18} />
+          <PiFunnelDuotone size={20} />
           <span className="text-xs uppercase tracking-widest font-bold">Filters</span>
         </button>
       </div>
@@ -110,27 +118,27 @@ const StoresPage = () => {
                 transition={{ duration: 0.4, delay: i * 0.05 }}
               >
                 <div className="cem-card h-full flex flex-col group overflow-hidden">
-                  <div className="relative aspect-video overflow-hidden bg-primary-bg">
+                  <div className="relative aspect-video overflow-hidden bg-slate-50">
                     <img 
                       src={store.image} 
                       alt={store.name} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                     />
-                    <div className="absolute top-4 right-4 bg-primary-bg/80 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-white/5 shadow-lg">
-                      <Star size={12} className="text-gold-accent fill-gold-accent" />
-                      <span className="text-[10px] font-black text-body-text">{store.rating}</span>
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-black/5 shadow-lg">
+                      <PiStarFill size={12} className="text-secondary" />
+                      <span className="text-[10px] font-black text-primary">{store.rating}</span>
                     </div>
                   </div>
                   
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h3 className="font-display font-semibold text-xl text-body-text mb-1 group-hover:text-gold-accent transition-colors tracking-tight">
+                        <h3 className="font-display font-bold text-xl text-primary mb-1 group-hover:text-primary transition-colors tracking-tight">
                           {store.name}
                         </h3>
                         <span className="cem-badge-gold">{store.category}</span>
                       </div>
-                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-border-color bg-primary-bg p-1 flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-border-color bg-slate-50 p-1 flex-shrink-0">
                         <img src={store.logo} alt="" className="w-full h-full object-contain" />
                       </div>
                     </div>
@@ -140,13 +148,13 @@ const StoresPage = () => {
                     </p>
 
                     <div className="mt-auto space-y-4">
-                      <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-text/60">
+                      <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-text/60 pt-4 border-t border-border-color">
                         <div className="flex items-center gap-2">
-                          <MapPin size={14} className="text-gold-accent" />
+                          <PiMapPinFill size={16} className="text-primary" />
                           <span>{store.location}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock size={14} className="text-muted-gold" />
+                          <PiClockDuotone size={16} className="text-muted-text" />
                           <span>{store.hours}</span>
                         </div>
                       </div>
@@ -154,7 +162,7 @@ const StoresPage = () => {
                         to={`/stores/${store.id}`} 
                         className="cem-btn-outline w-full flex items-center justify-center gap-2 text-xs italic"
                       >
-                        View Store <ChevronRight size={16} />
+                        View Store <PiArrowRightBold size={16} />
                       </Link>
                     </div>
                   </div>
@@ -172,8 +180,8 @@ const StoresPage = () => {
           animate={{ opacity: 1 }}
           className="py-24 text-center flex flex-col items-center gap-6"
         >
-          <div className="w-20 h-20 bg-elevated-surface rounded-full flex items-center justify-center text-muted-gold border border-muted-gold/20 mb-4">
-            <Search size={40} strokeWidth={1.5} />
+          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-primary border border-primary/10 mb-4">
+            <PiMagnifyingGlassDuotone size={40} />
           </div>
           <div>
             <h3 className="font-display text-2xl text-body-text mb-2 tracking-tight">No stores found</h3>

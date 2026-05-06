@@ -11,6 +11,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const [config, setConfig] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => setConfig(data))
+      .catch(err => console.error(err));
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans selection:bg-accent selection:text-white">
@@ -36,10 +44,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-2">
             <h3 className="text-3xl font-black mb-4 uppercase tracking-tighter italic">
-              CHINA <span className="text-secondary">ECONOMIC</span> MALL
+              {config?.heroTitle || "CHINA ECONOMIC MALL"}
             </h3>
             <p className="text-white/40 text-sm leading-relaxed max-w-md font-medium">
-              Ghana's leading destination for affordable wholesale and retail commerce. We bridge the gap between quality international goods and the Ghanaian household.
+              {config?.heroDescription?.substring(0, 160) + "..." || "Ghana's leading destination for affordable wholesale and retail commerce. We bridge the gap between quality international goods and the Ghanaian household."}
             </p>
             <div className="flex gap-4 mt-8">
                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-accent transition-colors cursor-pointer border border-white/5">
@@ -59,13 +67,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
           <div>
             <h4 className="text-[10px] font-black mb-6 uppercase tracking-[0.3em] text-secondary">Darkuman Hub</h4>
-            <p className="text-xs font-black uppercase tracking-widest text-white/60 mb-2">Darkuman, Accra, Ghana</p>
-            <p className="text-xs font-black uppercase tracking-widest text-white/60">07:30 - 21:30 DAILY</p>
-            <p className="text-sm font-black text-secondary mt-6 uppercase tracking-tighter">020 275 1082</p>
+            <p className="text-xs font-black uppercase tracking-widest text-white/60 mb-2">{config?.contactAddress || "Darkuman, Accra, Ghana"}</p>
+            <p className="text-xs font-black uppercase tracking-widest text-white/60">{config?.openingHours || "07:30 - 21:30 DAILY"}</p>
+            <p className="text-sm font-black text-secondary mt-6 uppercase tracking-tighter">{config?.contactPhone || "020 275 1082"}</p>
           </div>
         </div>
         <div className="max-w-7xl mx-auto border-t border-white/5 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-white/30">
-          <p>© 2026 CHINA ECONOMIC MALL DARKUMAN</p>
+          <p>© 2026 {config?.heroTitle || "CHINA ECONOMIC MALL"} DARKUMAN</p>
           <p>BUILT FOR EXCELLENCE IN GHANA</p>
         </div>
       </footer>

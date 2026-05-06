@@ -2,25 +2,32 @@
 @import "tailwindcss";
 
 @theme {
-  /* Color Palette */
-  --color-primary-bg: #0a0a0f;
-  --color-card-surface: #111118;
-  --color-elevated-surface: #1a1a24;
-  --color-gold-accent: #c9a84c;
-  --color-light-gold: #e8c97a;
-  --color-muted-gold: #7a6330;
-  --color-action-red: #e8472a;
-  --color-body-text: #f0ede6;
-  --color-muted-text: #8a8578;
-  --color-border-color: #2a2a36;
+  /* Core Brand Colors */
+  --color-primary: #1e3a8a;
+  --color-secondary: #facc15;
+  --color-accent: #dc2626;
+  --color-surface: #ffffff;
+  --color-border-subtle: #f1f5f9;
+
+  /* Design System Mapping (Maintaining compatibility) */
+  --color-primary-bg: #ffffff;
+  --color-card-surface: #ffffff;
+  --color-elevated-surface: #f8fafc;
+  --color-gold-accent: #1e3a8a; /* Primary Deep Blue as the main accent */
+  --color-light-gold: #2563eb;
+  --color-muted-gold: #1e40af;
+  --color-action-red: #dc2626;
+  --color-body-text: #1e293b;
+  --color-muted-text: #64748b;
+  --color-border-color: #e2e8f0;
   
   /* Typography */
   --font-display: "Playfair Display", serif;
   --font-body: "DM Sans", sans-serif;
 
-  /* Extras */
+  /* Shadows & Radius */
   --radius-xl: 1.25rem;
-  --shadow-gold: 0 4px 20px -5px rgba(201, 168, 76, 0.2);
+  --shadow-gold: 0 10px 15px -3px rgba(30, 58, 138, 0.1), 0 4px 6px -2px rgba(30, 58, 138, 0.05);
 }
 
 @layer base {
@@ -36,51 +43,51 @@
 /* CEM Professional Utility Classes */
 
 .cem-card {
-  @apply bg-card-surface border border-border-color rounded-xl transition-all duration-300;
+  @apply bg-card-surface border border-border-color rounded-xl transition-all duration-300 shadow-sm;
 }
 .cem-card:hover {
-  @apply border-muted-gold -translate-y-[3px] shadow-gold;
+  @apply border-primary/20 -translate-y-[3px] shadow-lg shadow-primary/5;
 }
 
 .cem-btn-primary {
-  @apply bg-gold-accent text-primary-bg px-7 py-3 rounded-[0.75rem] font-semibold transition-all hover:bg-light-gold active:scale-95;
+  @apply bg-primary text-white px-7 py-3 rounded-[0.75rem] font-semibold transition-all hover:bg-primary/90 active:scale-95 shadow-md shadow-primary/10;
 }
 
 .cem-btn-outline {
-  @apply bg-transparent text-gold-accent border border-muted-gold px-7 py-3 rounded-[0.75rem] font-medium transition-all hover:bg-gold-accent/5;
+  @apply bg-transparent text-primary border border-primary/20 px-7 py-3 rounded-[0.75rem] font-medium transition-all hover:bg-primary/5;
 }
 
 .cem-badge-gold {
-  @apply px-2.5 py-0.5 rounded-full bg-gold-accent/10 text-light-gold border border-gold-accent/30 text-[10px] font-bold uppercase tracking-wider;
+  @apply px-2.5 py-0.5 rounded-full bg-secondary/10 text-primary border border-secondary/30 text-[10px] font-bold uppercase tracking-wider;
 }
 
 .cem-badge-red {
-  @apply px-2.5 py-0.5 rounded-full bg-action-red/10 text-action-red border border-action-red/30 text-[10px] font-bold uppercase tracking-wider;
+  @apply px-2.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/30 text-[10px] font-bold uppercase tracking-wider;
 }
 
 .cem-badge-new {
-  @apply px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider;
+  @apply px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider;
 }
 
 .cem-section-label {
-  @apply text-[10px] uppercase tracking-[0.3em] text-gold-accent font-body font-medium;
+  @apply text-[10px] uppercase tracking-[0.3em] text-primary font-body font-bold;
 }
 
 .cem-divider {
-  @apply w-12 h-[2px] bg-gradient-to-r from-gold-accent to-transparent block my-4;
+  @apply w-12 h-[3px] bg-secondary block my-4 rounded-full;
 }
 
 .cem-pill {
-  @apply px-5 py-2 rounded-full bg-elevated-surface text-muted-text border border-transparent transition-all cursor-pointer text-xs font-medium;
+  @apply px-5 py-2 rounded-full bg-elevated-surface text-muted-text border border-border-color transition-all cursor-pointer text-xs font-medium;
 }
 .cem-pill:hover, .cem-pill.active {
-  @apply bg-gold-accent/10 text-light-gold border-gold-accent/50;
+  @apply bg-primary text-white border-primary;
 }
 
 .cem-input {
-  @apply bg-elevated-surface border border-border-color rounded-[0.75rem] px-4 py-3 text-[#f0ede6] outline-none transition-all focus:border-gold-accent/60 focus:ring-1 focus:ring-gold-accent/20;
+  @apply bg-white border border-border-color rounded-[0.75rem] px-4 py-3 text-body-text outline-none transition-all focus:border-primary/60 focus:ring-2 focus:ring-primary/10;
 }
 
 .cem-gradient-text {
-  @apply bg-gradient-to-br from-gold-accent to-light-gold bg-clip-text text-transparent;
+  @apply bg-gradient-to-br from-primary to-blue-600 bg-clip-text text-transparent;
 }

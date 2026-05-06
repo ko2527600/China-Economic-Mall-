@@ -6,12 +6,21 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const PromotionsPage = () => {
+  const [config, setConfig] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => setConfig(data))
+      .catch(err => console.error(err));
+  }, []);
+
   return (
     <div className="flex flex-col gap-8 py-10 px-6 max-w-7xl mx-auto w-full pb-24">
       <div className="flex items-center justify-between">
         <div>
            <h1 className="text-sm font-black uppercase text-slate-400 tracking-widest">Live Updates</h1>
-           <h2 className="text-4xl font-black uppercase tracking-tight">Active <span className="text-accent underline decoration-yellow-400 decoration-4 underline-offset-4">Promotions</span></h2>
+           <h2 className="text-4xl font-black uppercase tracking-tight">Active <span className="text-accent underline decoration-yellow-400 decoration-4 underline-offset-4">{config?.promoTitle?.split(' ').slice(-1) || "Promotions"}</span></h2>
         </div>
         <button className="relative p-4 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
            <Bell size={24} />
@@ -22,14 +31,14 @@ const PromotionsPage = () => {
       {/* Featured Promo Banner */}
       <div className="relative h-64 rounded-[2.5rem] overflow-hidden group shadow-2xl border-4 border-white">
          <img 
-          src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=1000&fit=crop" 
+          src={config?.promoImage || "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=1000&fit=crop"} 
           alt="Mega Sale" 
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 brightness-75" 
         />
          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 to-transparent p-10 flex flex-col justify-center">
-            <span className="bg-secondary text-primary text-[10px] font-black px-3 py-1 rounded-lg w-fit mb-4 uppercase tracking-[0.2em] shadow-lg">Mall Wide Event</span>
-            <h2 className="text-white text-5xl font-black mb-2 uppercase tracking-tighter shadow-text">MEGA SALE</h2>
-            <p className="text-secondary text-lg font-black italic uppercase tracking-widest">Up to 60% OFF ALL ITEMS</p>
+            <span className="bg-secondary text-primary text-[10px] font-black px-3 py-1 rounded-lg w-fit mb-4 uppercase tracking-[0.2em] shadow-lg">{config?.promoSubtitle || "Mall Wide Event"}</span>
+            <h2 className="text-white text-5xl font-black mb-2 uppercase tracking-tighter shadow-text">{config?.promoTitle || "MEGA SALE"}</h2>
+            <p className="text-secondary text-lg font-black italic uppercase tracking-widest">Up to {config?.promoDiscount || "60%"} OFF ALL ITEMS</p>
             <p className="text-white/60 text-sm mt-4 font-medium max-w-xs">Participating stores across all levels. Check labels for discount eligibility.</p>
          </div>
       </div>

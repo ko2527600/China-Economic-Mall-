@@ -1,35 +1,57 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ChevronRight, Star, TrendingUp, Gift, MapPin, Award, ShoppingCart, Play, Camera, X, Loader2 } from 'lucide-react';
+import { 
+  PiDeviceMobile, 
+  PiTShirt, 
+  PiBasket, 
+  PiHouse, 
+  PiCookingPot, 
+  PiArmchair,
+  PiArrowRightBold,
+  PiTrendUpBold,
+  PiGiftBold,
+  PiMapPinFill,
+  PiShoppingCartBold,
+  PiPlayFill,
+  PiCameraBold,
+  PiXBold,
+  PiStarFill,
+  PiMedalBold,
+  PiMagnifyingGlassBold
+} from 'react-icons/pi';
 import { Link } from 'react-router-dom';
 import { PROMOTIONS } from '../data/mockData';
 
 const HomePage = () => {
   const [dbStores, setDbStores] = useState<any[]>([]);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [config, setConfig] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const categories = [
-    { name: 'Electronics', icon: '📱' },
-    { name: 'Fashion', icon: '👔' },
-    { name: 'Groceries', icon: '🍎' },
-    { name: 'Home', icon: '🏠' },
-    { name: 'Kitchen', icon: '🍳' },
-    { name: 'Furniture', icon: '🛋️' },
+    { name: 'Electronics', icon: PiDeviceMobile },
+    { name: 'Fashion', icon: PiTShirt },
+    { name: 'Groceries', icon: PiBasket },
+    { name: 'Home', icon: PiHouse },
+    { name: 'Kitchen', icon: PiCookingPot },
+    { name: 'Furniture', icon: PiArmchair },
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [storesRes, productsRes] = await Promise.all([
+        const [storesRes, productsRes, configRes] = await Promise.all([
           fetch('/api/stores'),
-          fetch('/api/products')
+          fetch('/api/products'),
+          fetch('/api/config')
         ]);
         const storesData = await storesRes.json();
         const productsData = await productsRes.json();
+        const configData = await configRes.json();
         setDbStores(storesData);
         setDbProducts(productsData);
+        setConfig(configData);
       } catch (error) {
         console.error("Failed to fetch home data:", error);
       } finally {
@@ -44,14 +66,18 @@ const HomePage = () => {
 
   const [currentHeroImage, setCurrentHeroImage] = React.useState(0);
   const heroImages = [
-    '/photo_6041962101854637539_y.jpg',
-    '/photo_6041962101854637529_y.jpg'
+    '/photo_6041962101854637592_y.jpg',
+    '/photo_6041962101854637594_y.jpg',
+    '/photo_6041962101854637595_y.jpg',
+    '/photo_6041962101854637596_y.jpg'
   ];
 
   const mallVideos = [
-    { id: 'v1', src: '/document_6041962101394643501.mp4', title: 'Mall Walkthrough' },
-    { id: 'v2', src: '/document_6041962101394643503.mp4', title: 'Store Highlights' },
-    { id: 'v3', src: '/document_6041962101394643503-1.mp4', title: 'Customer Experience' }
+    { id: 'v1', src: '/Mall 1.mp4', title: 'Grand Mall Tour' },
+    { id: 'v2', src: '/Mall 2.mp4', title: 'Luxury Aisles' },
+    { id: 'v3', src: '/Mall 3.mp4', title: 'Modern Facade' },
+    { id: 'v4', src: '/Mall 4.mp4', title: 'Elite Stores' },
+    { id: 'v5', src: '/Mall 5.mp4', title: 'Shopping Vibes' }
   ];
 
   const [activeVideo, setActiveVideo] = React.useState<string | null>(null);
@@ -64,19 +90,33 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-8 pb-12">
+    <div className="flex flex-col gap-16 pb-24">
       {/* Hero Section */}
       <section className="relative min-h-[88vh] flex items-center overflow-hidden pt-12 md:pt-0">
         {/* Background Atmosphere */}
-        <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-transparent via-gold-accent/40 to-transparent z-20 hidden md:block" />
+        <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-gradient-to-b from-transparent via-primary/40 to-transparent z-20 hidden md:block" />
+        
+        {/* Video Atmosphere */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+           <video 
+             src={config?.heroVideo || "/Mall 1.mp4"} 
+             autoPlay 
+             muted 
+             loop 
+             playsInline
+             className="w-full h-full object-cover scale-110 blur-[1px]"
+           />
+           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/40 to-white" />
+        </div>
+
         <div className="absolute inset-0 z-0">
           <div 
-            className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full opacity-20 blur-[120px]"
-            style={{ background: 'radial-gradient(circle, var(--color-gold-accent) 0%, transparent 70%)' }}
+            className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full opacity-10 blur-[120px]"
+            style={{ background: 'radial-gradient(circle, var(--color-primary) 0%, transparent 70%)' }}
           />
           <div 
-            className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full opacity-10 blur-[100px]"
-            style={{ background: 'radial-gradient(circle, var(--color-action-red) 0%, transparent 70%)' }}
+            className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full opacity-5 blur-[100px]"
+            style={{ background: 'radial-gradient(circle, var(--color-secondary) 0%, transparent 70%)' }}
           />
         </div>
 
@@ -88,24 +128,33 @@ const HomePage = () => {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="flex flex-col"
           >
-            <span className="cem-section-label mb-4">Accra's Premier Trade Destination</span>
+            <span className="cem-section-label mb-4">{config?.heroSubtitle || "Accra's Premier Trade Destination"}</span>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-6 uppercase italic">
-              China <br/>
-              <span className="cem-gradient-text uppercase">Economic</span> <br/>
-              Mall
+              {config?.heroTitle ? (
+                <>
+                  {config.heroTitle.split(' ').slice(0, -1).join(' ')} <br/>
+                  <span className="cem-gradient-text uppercase">{config.heroTitle.split(' ').slice(-1)}</span>
+                </>
+              ) : (
+                <>
+                  China <br/>
+                  <span className="cem-gradient-text uppercase">Economic</span> <br/>
+                  Mall
+                </>
+              )}
             </h1>
             <div className="cem-divider mb-8" />
             
             <p className="text-muted-text text-lg md:text-xl font-medium leading-relaxed max-w-xl mb-10">
-              Hundreds of stores. Unbeatable prices. From cutting-edge electronics to high-street fashion — discover everything you need all under one roof.
+              {config?.heroDescription || "Hundreds of stores. Unbeatable prices. From cutting-edge electronics to high-street fashion — discover everything you need all under one roof."}
             </p>
 
             <div className="flex flex-wrap gap-4 mb-16">
               <Link to="/stores" className="cem-btn-primary flex items-center gap-3 italic">
-                Explore Stores <ChevronRight size={18} />
+                Explore Stores <PiArrowRightBold size={18} />
               </Link>
               <Link to="/promotions" className="cem-btn-outline flex items-center gap-3 italic">
-                View Deals <TrendingUp size={18} />
+                View Deals <PiTrendUpBold size={18} />
               </Link>
             </div>
 
@@ -124,7 +173,7 @@ const HomePage = () => {
                   className="flex items-center gap-8 md:gap-12"
                 >
                   <div className="flex flex-col">
-                    <span className="font-display text-3xl md:text-4xl text-light-gold font-bold">{stat.val}</span>
+                    <span className="font-display text-3xl md:text-4xl text-primary font-bold">{stat.val}</span>
                     <span className="text-[10px] uppercase tracking-widest text-muted-text font-black mt-1">{stat.lab}</span>
                   </div>
                   {i < 2 && <div className="h-10 w-[1px] bg-border-color" />}
@@ -140,7 +189,7 @@ const HomePage = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="relative"
           >
-            <div className="cem-card overflow-hidden relative group" style={{ boxShadow: '0 0 60px rgba(201,168,76,0.08)' }}>
+            <div className="cem-card overflow-hidden relative group shadow-gold">
               <div className="aspect-[4/5] md:aspect-[4/4] overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.img 
@@ -171,7 +220,7 @@ const HomePage = () => {
                 {heroImages.map((_, idx) => (
                   <div 
                     key={idx} 
-                    className={`h-1 rounded-full transition-all duration-500 ${idx === currentHeroImage ? 'w-6 bg-gold-accent' : 'w-1.5 bg-white/20'}`}
+                    className={`h-1 rounded-full transition-all duration-500 ${idx === currentHeroImage ? 'w-6 bg-primary' : 'w-1.5 bg-black/10'}`}
                   />
                 ))}
               </div>
@@ -187,26 +236,26 @@ const HomePage = () => {
       <section className="px-6 max-w-7xl mx-auto w-full">
         <div className="flex items-center justify-between mb-8">
           <div className="flex flex-col">
-            <h2 className="text-[10px] font-black uppercase text-accent tracking-[0.4em] mb-1">Explore Departments</h2>
-            <h3 className="text-2xl font-black uppercase tracking-tight">Mall <span className="text-secondary">Directory</span></h3>
+            <h2 className="text-[10px] font-black uppercase text-gold-accent tracking-[0.4em] mb-1">Explore Departments</h2>
+            <h3 className="text-3xl font-display font-black uppercase tracking-tight">Mall <span className="cem-gradient-text uppercase">Directory</span></h3>
           </div>
-          <Link to="/stores" className="text-accent text-[10px] font-black uppercase tracking-widest flex items-center gap-2 group hover:underline bg-slate-50 px-4 py-2 rounded-xl transition-all hover:bg-slate-100">
-            View All Stores <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          <Link to="/stores" className="text-gold-accent text-[10px] font-black uppercase tracking-widest flex items-center gap-2 group hover:underline bg-elevated-surface px-6 py-3 rounded-xl transition-all hover:bg-gold-accent/5">
+            View All Stores <PiArrowRightBold size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {categories.map((cat, i) => (
             <motion.div 
               key={cat.name}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="flex flex-col items-center gap-3 group cursor-pointer"
+              className="flex flex-col items-center gap-4 group cursor-pointer"
             >
-              <div className="w-full aspect-square rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-4xl shadow-sm group-hover:border-accent group-hover:-translate-y-2 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-accent/5">
-                <span className="group-hover:scale-110 transition-transform duration-300 transform-gpu">{cat.icon}</span>
+              <div className="w-full aspect-square rounded-2xl bg-card-surface border border-border-color flex items-center justify-center shadow-sm group-hover:border-gold-accent group-hover:-translate-y-2 transition-all duration-300 group-hover:shadow-gold">
+                <cat.icon className="text-muted-text group-hover:text-gold-accent group-hover:scale-110 transition-all duration-300 transform-gpu" size={32} />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-accent group-hover:tracking-widest transition-all">{cat.name}</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-text group-hover:text-gold-accent group-hover:tracking-widest transition-all">{cat.name}</span>
             </motion.div>
           ))}
         </div>
@@ -214,32 +263,32 @@ const HomePage = () => {
 
       {/* Trending Products */}
       <section className="px-6 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
-            <ShoppingCart size={20} className="text-accent" />
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-xs font-black uppercase text-muted-text tracking-widest flex items-center gap-3">
+            <PiShoppingCartBold size={20} className="text-gold-accent" />
             Trending Products
           </h2>
-          <Link to="/products" className="text-accent text-[10px] font-black uppercase tracking-widest flex items-center gap-1 hover:underline">
-            Shop Catalog <ChevronRight size={14} />
+          <Link to="/products" className="text-gold-accent text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:underline">
+            Shop Catalog <PiArrowRightBold size={14} />
           </Link>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {isLoading ? (
             Array(4).fill(0).map((_, i) => (
-              <div key={i} className="aspect-square bg-slate-100 animate-pulse rounded-2xl" />
+              <div key={i} className="aspect-square bg-card-surface animate-pulse rounded-2xl" />
             ))
           ) : dbProducts.slice(0, 4).map((product) => (
-             <Link key={product.id} to="/products" className="geometric-card flex flex-col group p-2 hover:border-accent interactive-hover">
-                <div className="relative aspect-square rounded-2xl overflow-hidden mb-3 bg-slate-50">
+             <Link key={product.id} to="/products" className="cem-card flex flex-col group p-2 interactive-hover overflow-hidden">
+                <div className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-slate-50">
                   <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" />
-                  <div className="absolute top-2 left-2 px-2 py-0.5 bg-secondary text-primary font-black text-[8px] rounded uppercase">Hot</div>
+                  <div className="absolute top-2 left-2 px-2 py-0.5 bg-accent text-white font-black text-[8px] rounded uppercase">Hot</div>
                 </div>
-                <div className="px-2 pb-2">
-                   <h3 className="font-black text-xs uppercase tracking-tight mb-1 truncate group-hover:text-accent transition-colors">{product.name}</h3>
+                <div className="px-3 pb-3">
+                   <h3 className="font-display font-semibold text-sm text-body-text uppercase tracking-tight mb-2 truncate group-hover:text-primary transition-colors">{product.name}</h3>
                    <div className="flex items-center justify-between">
-                      <p className="text-primary font-black text-sm">{product.price}</p>
-                      <div className="p-1.5 bg-slate-50 rounded-lg group-hover:bg-accent group-hover:text-white transition-all">
-                        <ShoppingCart size={14} strokeWidth={2.5} />
+                      <p className="text-primary font-bold text-base">{product.price}</p>
+                      <div className="p-2 bg-elevated-surface rounded-lg group-hover:bg-primary group-hover:text-white transition-all">
+                        <PiShoppingCartBold size={16} />
                       </div>
                    </div>
                 </div>
@@ -248,30 +297,59 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Parallax Video Break */}
+      <section className="relative h-[50vh] md:h-[65vh] w-full overflow-hidden flex items-center justify-center my-12">
+        <div className="absolute inset-0 z-0">
+          <video 
+            src="/Mall 3.mp4" 
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-primary/20 backdrop-brightness-75" />
+        </div>
+        <div className="relative z-10 text-center px-6">
+           <motion.div
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.8 }}
+           >
+             <span className="text-secondary font-black text-xs uppercase tracking-[0.5em] mb-4 block">Unmatched Scale</span>
+             <h2 className="text-white text-4xl md:text-7xl lg:text-8xl font-display font-black uppercase italic tracking-tighter leading-[0.85]">
+               The Heart of <br/>
+               <span className="text-secondary">West African Trade</span>
+             </h2>
+           </motion.div>
+        </div>
+      </section>
+
       {/* Promotions Slider */}
       <section className="px-6 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
-            <TrendingUp size={20} className="text-accent" />
-            Mid-Year Mega Sale
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-xs font-black uppercase text-muted-text tracking-widest flex items-center gap-3">
+            <PiTrendUpBold size={20} className="text-action-red" />
+            {config?.promoTitle || "Mid-Year Mega Sale"}
           </h2>
         </div>
-        <div className="flex gap-6 overflow-x-auto pb-6 no-scrollbar">
+        <div className="flex gap-8 overflow-x-auto pb-6 no-scrollbar">
           {activePromos.map((promo) => (
-            <div key={promo.id} className="flex-shrink-0 w-[320px] md:w-[500px] geometric-card overflow-hidden group border-4 border-slate-100">
-              <div className="relative aspect-[16/9]">
+            <div key={promo.id} className="flex-shrink-0 w-[320px] md:w-[540px] cem-card overflow-hidden group">
+              <div className="relative aspect-[21/9]">
                 <img src={promo.image} alt={promo.title} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-accent text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-wider shadow-lg">Promotion</span>
+                  <span className="bg-action-red text-white text-[10px] font-black px-4 py-1.5 rounded-lg uppercase tracking-wider shadow-lg">{config?.promoSubtitle || "Promotion"}</span>
                 </div>
               </div>
-              <div className="p-6 bg-secondary relative">
-                <div className="absolute -top-12 right-6 w-24 h-24 bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center border-4 border-accent rotate-6 group-hover:rotate-0 transition-transform">
-                  <span className="text-[10px] font-black text-accent uppercase">SAVE</span>
-                  <span className="text-3xl font-black text-accent tracking-tighter">40%</span>
+              <div className="p-8 bg-elevated-surface relative border-t border-border-color">
+                <div className="absolute -top-12 right-8 w-24 h-24 bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center border-2 border-secondary rotate-6 group-hover:rotate-0 transition-transform">
+                  <span className="text-[10px] font-black text-primary uppercase">SAVE</span>
+                  <span className="text-3xl font-black text-primary tracking-tighter">{config?.promoDiscount || "40%"}</span>
                 </div>
-                <h3 className="text-primary font-black text-xl mb-1 uppercase tracking-tight">{promo.title}</h3>
-                <p className="text-primary/70 text-sm font-medium pr-16">{promo.description}</p>
+                <h3 className="text-body-text font-display font-bold text-2xl mb-2 uppercase tracking-tight">{promo.title}</h3>
+                <p className="text-muted-text text-sm font-medium pr-20 line-clamp-2 leading-relaxed">{promo.description}</p>
               </div>
             </div>
           ))}
@@ -280,46 +358,55 @@ const HomePage = () => {
 
       {/* Mall Spotlight (Videos) */}
       <section className="px-6 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-10">
           <div className="flex flex-col">
-            <h2 className="text-[10px] font-black uppercase text-accent tracking-[0.4em] mb-1">Live from Darkuman</h2>
-            <h3 className="text-2xl font-black uppercase tracking-tight flex items-center gap-2">
-              Mall <span className="text-secondary">Spotlight</span>
-              <Camera size={20} className="text-accent" />
+            <h2 className="text-[10px] font-black uppercase text-gold-accent tracking-[0.4em] mb-2">Live from Darkuman</h2>
+            <h3 className="text-3xl font-display font-black uppercase tracking-tight flex items-center gap-3">
+              Mall <span className="cem-gradient-text uppercase">Spotlight</span>
+              <PiCameraBold size={24} className="text-gold-accent" />
             </h3>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {mallVideos.map((video) => (
-            <motion.div 
-              key={video.id}
-              whileHover={{ scale: 1.02 }}
-              className="relative aspect-[9/16] md:aspect-video rounded-[2.5rem] overflow-hidden group cursor-pointer border-4 border-slate-100 shadow-xl"
-              onClick={() => setActiveVideo(video.src)}
-            >
-              <video 
-                src={video.src} 
-                className="w-full h-full object-cover"
-                muted
-                loop
-                playsInline
-                onMouseOver={(e) => e.currentTarget.play()}
-                onMouseOut={(e) => {
-                  e.currentTarget.pause();
-                  e.currentTarget.currentTime = 0;
-                }}
-              />
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:bg-accent group-hover:border-accent transition-all ring-8 ring-white/10 group-hover:ring-accent/20">
-                  <Play size={24} className="text-white fill-white translate-x-0.5" />
+        <div className="relative overflow-hidden -mx-6">
+          <motion.div 
+            className="flex gap-6 px-6 w-max"
+            animate={{ 
+              x: [0, -((480 + 24) * mallVideos.length)] 
+            }}
+            transition={{ 
+              duration: 30, 
+              repeat: Infinity, 
+              ease: "linear" 
+            }}
+          >
+            {[...mallVideos, ...mallVideos].map((video, idx) => (
+              <motion.div 
+                key={`${video.id}-${idx}`}
+                className="relative flex-shrink-0 w-[300px] md:w-[480px] aspect-video rounded-[2.5rem] overflow-hidden group cursor-pointer border border-border-color shadow-2xl"
+                onClick={() => setActiveVideo(video.src)}
+              >
+                <video 
+                  src={video.src} 
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
+                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex flex-col justify-end p-8">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">
+                    <PiPlayFill size={28} className="text-white translate-x-1" />
+                  </div>
+                  <div className="relative z-10 translate-y-2 group-hover:translate-y-0 transition-transform">
+                    <p className="text-secondary font-black uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
+                      <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" /> Live Now
+                    </p>
+                    <h4 className="text-white font-display font-bold text-2xl uppercase tracking-tighter leading-none">{video.title}</h4>
+                  </div>
                 </div>
-              </div>
-              <div className="absolute bottom-6 left-6 right-6">
-                <p className="text-white font-black uppercase tracking-widest text-[10px] bg-slate-900/60 backdrop-blur-sm w-fit px-3 py-1 rounded-full mb-1">Live Scene</p>
-                <h4 className="text-white font-black text-xl uppercase tracking-tighter leading-none">{video.title}</h4>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -330,14 +417,14 @@ const HomePage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-primary/95 flex items-center justify-center p-4 md:p-12"
+            className="fixed inset-0 z-[100] bg-primary-bg/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12"
             onClick={() => setActiveVideo(null)}
           >
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="relative aspect-[9/16] max-h-full rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl"
+              className="relative aspect-[9/16] max-h-full rounded-3xl overflow-hidden border border-white/10 shadow-gold"
               onClick={(e) => e.stopPropagation()}
             >
               <video 
@@ -348,9 +435,9 @@ const HomePage = () => {
               />
               <button 
                 onClick={() => setActiveVideo(null)}
-                className="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 z-10"
+                className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-gold-accent text-white rounded-full flex items-center justify-center backdrop-blur-xl border border-white/20 z-10 transition-all"
               >
-                <X size={20} />
+                <PiXBold size={24} />
               </button>
             </motion.div>
           </motion.div>
@@ -359,39 +446,41 @@ const HomePage = () => {
 
       {/* Featured Stores */}
       <section className="px-6 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">Explore Popular Stores</h2>
+        <div className="flex items-center justify-between mb-10">
+          <h2 className="text-xs font-black uppercase text-muted-text tracking-[0.3em]">Explore Popular Stores</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {isLoading ? (
              Array(3).fill(0).map((_, i) => (
-               <div key={i} className="aspect-video bg-slate-100 animate-pulse rounded-[2.5rem]" />
+               <div key={i} className="aspect-video bg-card-surface animate-pulse rounded-[2.5rem]" />
              ))
           ) : featuredStores.length > 0 ? (
             featuredStores.map((store) => (
-              <Link key={store.id} to={`/stores/${store.id}`} className="geometric-card flex flex-col group p-2 hover:border-accent">
-              <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
+              <Link key={store.id} to={`/stores/${store.id}`} className="cem-card flex flex-col group overflow-hidden border-none shadow-xl">
+              <div className="relative aspect-video overflow-hidden">
                 <img src={store.image} alt={store.name} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" />
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                  <Star size={14} className="text-yellow-500 fill-yellow-500" />
-                  <span className="text-[10px] font-black">{store.rating}</span>
+                <div className="absolute top-4 left-4 bg-primary-bg/80 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/5 shadow-lg">
+                  <PiStarFill size={14} className="text-gold-accent" />
+                  <span className="text-xs font-black text-body-text">{store.rating}</span>
                 </div>
               </div>
-              <div className="px-4 pb-4">
-                <div className="flex items-start justify-between mb-1">
-                  <h3 className="font-black text-lg leading-tight uppercase tracking-tight group-hover:text-accent transition-colors">{store.name}</h3>
-                  <img src={store.logo} alt="" className="w-8 h-8 rounded-lg object-cover border border-slate-100 p-0.5" />
+              <div className="p-6 pb-8 flex-1 flex flex-col bg-card-surface">
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="font-display font-bold text-xl text-body-text leading-tight uppercase tracking-tight group-hover:text-gold-accent transition-colors">{store.name}</h3>
+                  <div className="w-10 h-10 rounded-xl bg-elevated-surface p-1 border border-border-color flex-shrink-0">
+                    <img src={store.logo} alt="" className="w-full h-full object-contain" />
+                  </div>
                 </div>
-                <p className="badge-promo w-fit mb-4">{store.category}</p>
-                <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-auto border-t border-slate-50 pt-3">
-                   <MapPin size={14} />
+                <div className="cem-badge-gold w-fit mb-6">{store.category}</div>
+                <div className="flex items-center gap-2 text-muted-text/60 text-[10px] font-black uppercase tracking-[0.2em] mt-auto pt-6 border-t border-border-color">
+                   <PiMapPinFill size={16} className="text-gold-accent" />
                    <span>{store.location}</span>
                 </div>
               </div>
             </Link>
           ))
           ) : (
-            <div className="col-span-full py-12 text-center text-slate-400 font-black uppercase tracking-widest bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200">
+            <div className="col-span-full py-20 text-center text-muted-text font-black uppercase tracking-widest bg-card-surface rounded-[2.5rem] border border-dashed border-border-color">
                No featured stores yet
             </div>
           )}
@@ -400,20 +489,51 @@ const HomePage = () => {
 
       {/* Loyalty CTA */}
       <section className="px-6 max-w-7xl mx-auto w-full">
-        <div className="bg-primary border-b-8 border-secondary text-white rounded-[2.5rem] p-10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="relative z-10 max-w-md">
-            <span className="text-secondary font-black text-xs uppercase tracking-[0.3em] mb-4 block">Membership Status</span>
-            <h2 className="text-3xl md:text-5xl font-black mb-4 leading-none uppercase italic">Join Our Gold <br/><span className="text-secondary font-black">Rewards Tier</span></h2>
-            <p className="text-white/60 text-sm mb-8 font-medium">Earn point on every purchase and get early access to our major mall event and seasonal sales.</p>
-            <Link to="/loyalty" className="bg-accent text-white font-black px-10 py-4 rounded-xl inline-flex items-center gap-3 text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-accent/20 italic">
-              Start Earning Points <Gift size={18} />
+        <div className="bg-primary border border-primary/20 rounded-[3rem] p-12 md:p-20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 shadow-2xl">
+          {/* Background Video for CTA */}
+          <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+             <video 
+               src="/Mall 5.mp4" 
+               autoPlay 
+               muted 
+               loop 
+               playsInline
+               className="w-full h-full object-cover grayscale"
+             />
+             <div className="absolute inset-0 bg-primary/60 backdrop-blur-[2px]" />
+          </div>
+
+          {/* Subtle Glows inside CTA */}
+          <div className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-[100px] z-10" />
+          
+          <div className="relative z-10 max-w-lg">
+            <span className="text-secondary font-black text-xs uppercase tracking-[0.4em] mb-6 block">Membership Status</span>
+            <h2 className="text-4xl md:text-6xl font-display font-black mb-6 leading-[0.9] uppercase italic text-white">
+              {config?.loyaltyTitle ? (
+                <>
+                  {config.loyaltyTitle.split(' ').slice(0, -2).join(' ')} <br/>
+                  <span className="text-secondary uppercase">{config.loyaltyTitle.split(' ').slice(-2).join(' ')}</span>
+                </>
+              ) : (
+                <>Join Our Gold <br/><span className="text-secondary uppercase">Rewards Tier</span></>
+              )}
+            </h2>
+            <p className="text-white/70 text-lg mb-10 font-medium leading-relaxed">{config?.loyaltyDescription || "Earn points on every purchase and get early access to major mall events, seasonal sales, and exclusive trade discounts."}</p>
+            <Link to="/loyalty" className="bg-secondary text-primary px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-secondary/90 transition-all italic flex items-center gap-4 text-sm">
+              Start Earning Points <PiGiftBold size={22} />
             </Link>
           </div>
           <div className="relative z-10 w-full md:w-auto flex flex-col items-center">
-            <Award className="text-secondary/20 -rotate-12 absolute -z-10" size={300} />
-            <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2rem] text-center w-full max-w-[280px]">
-               <p className="text-4xl font-black text-secondary tracking-tighter mb-1">1,240</p>
-               <p className="text-[10px] font-black uppercase tracking-widest text-white/50">Current Member Pts</p>
+            <PiMedalBold className="text-white/5 -rotate-12 absolute -z-10" size={400} />
+            <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-10 rounded-[2.5rem] text-center w-full max-w-[320px] shadow-2xl">
+               <p className="text-5xl font-display font-black text-secondary tracking-tighter mb-2">1,240</p>
+               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">Current Member Pts</p>
+               <div className="mt-8 pt-8 border-t border-white/10">
+                 <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full w-[65%] bg-secondary shadow-lg shadow-secondary/20" />
+                 </div>
+                 <p className="text-[9px] font-black uppercase text-secondary mt-3">65% to Gold Status</p>
+               </div>
             </div>
           </div>
         </div>

@@ -4,6 +4,15 @@ import { Award, Gift, Zap, ShieldCheck, History, ArrowRight, ChevronRight } from
 import { motion } from 'framer-motion';
 
 const LoyaltyPage = () => {
+  const [config, setConfig] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => setConfig(data))
+      .catch(err => console.error(err));
+  }, []);
+
   const tiers = [
     { name: 'Bronze', points: '0-500', color: 'text-amber-700', bg: 'bg-amber-100', active: true },
     { name: 'Silver', points: '501-2000', color: 'text-slate-500', bg: 'bg-slate-100', active: false },
@@ -112,7 +121,7 @@ const LoyaltyPage = () => {
       </section>
 
       {/* History CTA */}
-      <button className="flex items-center justify-between p-8 bg-slate-900 text-white rounded-[2.5rem] group shadow-2xl hover:bg-slate-800 transition-all active:scale-95 border-b-4 border-accent">
+      <button className="flex items-center justify-between p-8 bg-primary text-white rounded-[2.5rem] group shadow-2xl hover:bg-primary/90 transition-all active:scale-95 border-b-4 border-accent">
          <div className="flex items-center gap-6">
             <div className="p-4 bg-white/10 rounded-2xl shadow-inner border border-white/5">
                <History size={32} className="text-secondary" />

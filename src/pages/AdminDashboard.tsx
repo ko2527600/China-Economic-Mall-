@@ -14,15 +14,111 @@ import {
   LayoutDashboard,
   Search,
   Filter,
-  Star
+  Star,
+  Settings
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { STORES, PRODUCTS } from '../data/mockData';
 
+const ImageUploadField = ({ 
+  label, 
+  name, 
+  defaultValue = '', 
+  multiple = false,
+  onImagesChange
+}: { 
+  label: string, 
+  name: string, 
+  defaultValue?: string | string[], 
+  multiple?: boolean,
+  onImagesChange?: (urls: string[]) => void
+}) => {
+  const [previews, setPreviews] = useState<string[]>(
+    Array.isArray(defaultValue) ? defaultValue : (defaultValue ? [defaultValue] : [])
+  );
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.urls) {
+        const newUrls = multiple ? [...previews, ...data.urls] : data.urls;
+        setPreviews(newUrls);
+        if (onImagesChange) onImagesChange(newUrls);
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const newUrls = previews.filter((_, i) => i !== index);
+    setPreviews(newUrls);
+    if (onImagesChange) onImagesChange(newUrls);
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{label}</label>
+      <div className="flex flex-wrap gap-4 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl min-h-[120px]">
+        {previews.map((url, idx) => (
+          <div key={idx} className="relative w-20 h-20 rounded-xl overflow-hidden group shadow-md">
+            <img src={url} className="w-full h-full object-cover" alt="Preview" />
+            <button 
+              type="button"
+              onClick={() => removeImage(idx)}
+              className="absolute inset-0 bg-red-500/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        ))}
+        
+        {(multiple || previews.length === 0) && (
+          <label className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-white transition-all group">
+            {isUploading ? (
+              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <>
+                <Upload size={20} className="text-slate-400 group-hover:text-primary transition-colors" />
+                <span className="text-[8px] font-black uppercase text-slate-400 mt-1">Upload</span>
+              </>
+            )}
+            <input 
+              type="file" 
+              className="hidden" 
+              multiple={multiple} 
+              accept="image/*" 
+              onChange={handleFileChange}
+            />
+          </label>
+        )}
+      </div>
+      <input type="hidden" name={name} value={multiple ? previews.join(',') : (previews[0] || '')} />
+    </div>
+  );
+};
+
 const AdminDashboard = () => {
   const [stores, setStores] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [config, setConfig] = useState<any>(null);
 
   const seedData = async () => {
     if (!confirm("This will clear existing data and seed from mock data. Continue?")) return;
@@ -66,7 +162,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'stores' | 'products'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'stores' | 'products' | 'settings'>('overview');
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState<{message: string, type: 'success' | 'error'} | null>(null);
@@ -87,14 +183,17 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [storesRes, productsRes] = await Promise.all([
+      const [storesRes, productsRes, configRes] = await Promise.all([
         fetch('/api/stores'),
-        fetch('/api/products')
+        fetch('/api/products'),
+        fetch('/api/config')
       ]);
       const storesData = await storesRes.json();
       const productsData = await productsRes.json();
+      const configData = await configRes.json();
       setStores(storesData);
       setProducts(productsData);
+      setConfig(configData);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -157,6 +256,33 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleUpdateConfig = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Handle array conversion for heroImages if needed
+    if ((data as any).heroImages) {
+      (data as any).heroImages = (data as any).heroImages.split(',').map((s: string) => s.trim()).filter((s: string) => s);
+    }
+
+    try {
+      const response = await fetch('/api/config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (response.ok) {
+        setFeedback({ message: 'Site configuration updated', type: 'success' });
+        fetchData();
+      } else {
+        setFeedback({ message: 'Failed to update configuration', type: 'error' });
+      }
+    } catch (error) {
+      console.error("Error updating config:", error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -168,14 +294,14 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-primary text-white p-6 flex flex-col gap-8">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center">
-             <BarChart3 className="text-white" size={20} />
+      <aside className="w-full md:w-64 bg-primary text-white p-6 flex flex-col gap-8 overflow-y-auto">
+        <div className="flex items-center gap-3 group cursor-pointer mb-4">
+          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg shadow-white/10">
+            <span className="font-display font-black text-2xl text-primary leading-none translate-y-[-1px]">C</span>
           </div>
-          <div>
-            <h1 className="font-black text-xl uppercase tracking-tighter leading-none italic">CEML</h1>
-            <p className="text-[10px] font-black uppercase text-secondary tracking-widest">Admin Control</p>
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-lg text-white leading-tight">Admin Console</span>
+            <span className="text-[9px] font-body font-black uppercase tracking-[0.3em] text-secondary">Economic Mall</span>
           </div>
         </div>
 
@@ -184,6 +310,7 @@ const AdminDashboard = () => {
             { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
             { id: 'stores', icon: StoreIcon, label: 'Manage Stores' },
             { id: 'products', icon: ShoppingBag, label: 'Manage Products' },
+            { id: 'settings', icon: Settings, label: 'Site Settings' },
           ].map((item) => (
             <button
               key={item.id}
@@ -223,6 +350,7 @@ const AdminDashboard = () => {
                {activeTab === 'overview' && "Dashboard Overview"}
                {activeTab === 'stores' && "Store Inventory"}
                {activeTab === 'products' && "Product Catalog"}
+               {activeTab === 'settings' && "Site Configuration"}
             </h2>
             <p className="text-slate-400 text-sm font-medium">Manage and monitor mall operations in real-time.</p>
           </div>
@@ -242,9 +370,9 @@ const AdminDashboard = () => {
              </AnimatePresence>
              <button 
               onClick={seedData}
-              className="bg-primary text-secondary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-secondary hover:text-primary transition-all flex items-center gap-2"
+              className="bg-white border-2 border-slate-200 text-primary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2"
             >
-               <LayoutDashboard size={16} /> Seed Mock Data
+               <LayoutDashboard size={16} /> Seed Data
              </button>
              <button 
               onClick={() => {
@@ -252,7 +380,7 @@ const AdminDashboard = () => {
                 setCurrentEdit(null);
                 setIsModalOpen(true);
               }}
-              className="bg-white border-2 border-slate-200 text-primary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-accent transition-all flex items-center gap-2"
+              className="bg-primary text-white px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/10"
             >
                <Plus size={16} /> New Store
              </button>
@@ -262,7 +390,7 @@ const AdminDashboard = () => {
                 setCurrentEdit(null);
                 setIsModalOpen(true);
               }}
-              className="bg-accent text-white px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-accent/20 hover:scale-105 transition-all flex items-center gap-2"
+              className="bg-secondary text-primary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-secondary/20 hover:scale-105 transition-all flex items-center gap-2"
             >
                <Plus size={16} /> New Product
              </button>
@@ -411,6 +539,104 @@ const AdminDashboard = () => {
              </table>
           </div>
         )}
+
+        {activeTab === 'settings' && config && (
+          <form onSubmit={handleUpdateConfig} className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-10 max-w-4xl">
+            <div className="space-y-12">
+              {/* Hero Section */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Hero Section</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Hero Title</label>
+                    <input name="heroTitle" defaultValue={config.heroTitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Hero Subtitle</label>
+                    <input name="heroSubtitle" defaultValue={config.heroSubtitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="flex flex-col gap-2 md:col-span-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Hero Description</label>
+                    <textarea name="heroDescription" defaultValue={config.heroDescription} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[100px]" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <ImageUploadField 
+                      label="Hero Background Video" 
+                      name="heroVideo" 
+                      defaultValue={config.heroVideo} 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Promotions Section */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Promotion Banner</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promo Title</label>
+                    <input name="promoTitle" defaultValue={config.promoTitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promo Subtitle</label>
+                    <input name="promoSubtitle" defaultValue={config.promoSubtitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promo Discount (e.g. 40%)</label>
+                    <input name="promoDiscount" defaultValue={config.promoDiscount} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <ImageUploadField 
+                      label="Promotion Banner Image" 
+                      name="promoImage" 
+                      defaultValue={config.promoImage} 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Loyalty Section */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Loyalty Program</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2 md:col-span-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Loyalty Title</label>
+                    <input name="loyaltyTitle" defaultValue={config.loyaltyTitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="flex flex-col gap-2 md:col-span-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Loyalty Description</label>
+                    <textarea name="loyaltyDescription" defaultValue={config.loyaltyDescription} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[100px]" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Contact & Info</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Phone Number</label>
+                    <input name="contactPhone" defaultValue={config.contactPhone} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Opening Hours</label>
+                    <input name="openingHours" defaultValue={config.openingHours} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                  <div className="flex flex-col gap-2 md:col-span-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Address</label>
+                    <input name="contactAddress" defaultValue={config.contactAddress} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12 pt-8 border-t border-slate-100">
+               <button type="submit" className="w-full bg-primary text-white py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 active:scale-95">
+                  <Save size={20} className="text-secondary" /> Save Site Settings
+               </button>
+            </div>
+          </form>
+        )}
       </main>
       <AnimatePresence>
         {isModalOpen && (
@@ -418,16 +644,16 @@ const AdminDashboard = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-primary/80 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-[100] bg-primary/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
           >
             <motion.div 
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden"
+              className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden my-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-slate-50 p-8 border-b border-slate-100 flex items-center justify-between">
+              <div className="bg-slate-50 p-8 border-b border-slate-100 sticky top-0 z-20 flex items-center justify-between">
                 <div>
                   <h3 className="text-2xl font-black uppercase tracking-tighter italic">
                     {currentEdit ? 'Edit' : 'Create New'} {modalType === 'store' ? 'Store' : 'Product'}
@@ -464,14 +690,16 @@ const AdminDashboard = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>
                         <textarea name="description" defaultValue={currentEdit?.description} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[100px]" />
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Logo URL</label>
-                        <input name="logo" defaultValue={currentEdit?.logo} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Main Image URL</label>
-                        <input name="image" defaultValue={currentEdit?.image} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
-                      </div>
+                      <ImageUploadField 
+                        label="Store Logo" 
+                        name="logo" 
+                        defaultValue={currentEdit?.logo} 
+                      />
+                      <ImageUploadField 
+                        label="Main Store Image" 
+                        name="image" 
+                        defaultValue={currentEdit?.image} 
+                      />
                       <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Location</label>
                         <input name="location" defaultValue={currentEdit?.location} placeholder="e.g. Ground Floor, Shop 12" className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
@@ -480,9 +708,13 @@ const AdminDashboard = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Phone</label>
                         <input name="phone" defaultValue={currentEdit?.phone} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Gallery (Comma separated URLs)</label>
-                        <input name="gallery" defaultValue={currentEdit?.gallery?.join(', ')} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                      <div className="md:col-span-2">
+                        <ImageUploadField 
+                          label="Store Gallery (Multiple)" 
+                          name="gallery" 
+                          multiple={true}
+                          defaultValue={currentEdit?.gallery} 
+                        />
                       </div>
                       <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Operating Hours</label>
@@ -518,9 +750,12 @@ const AdminDashboard = () => {
                            <option>Groceries</option>
                         </select>
                       </div>
-                      <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Image URL</label>
-                        <input name="image" required defaultValue={currentEdit?.image} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                      <div className="md:col-span-2">
+                        <ImageUploadField 
+                          label="Product Image" 
+                          name="image" 
+                          defaultValue={currentEdit?.image} 
+                        />
                       </div>
                       <div className="flex flex-col gap-2 md:col-span-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>

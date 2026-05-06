@@ -53,3 +53,21 @@ model Product {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+model SiteConfig {
+  id                 String   @id @default("default")
+  heroTitle          String   @default("China Economic Mall")
+  heroSubtitle       String   @default("Accra's Premier Trade Destination")
+  heroDescription    String   @default("Hundreds of stores. Unbeatable prices. From cutting-edge electronics to high-street fashion — discover everything you need all under one roof.")
+  heroImages         String[] @default([])
+  heroVideo          String   @default("/Mall 1.mp4")
+  promoTitle         String   @default("Mid-Year Mega Sale")
+  promoSubtitle      String   @default("Promotion")
+  promoDiscount      String   @default("40%")
+  loyaltyTitle       String   @default("Join Our Gold Rewards Tier")
+  loyaltyDescription String   @default("Earn points on every purchase and get early access to major mall events, seasonal sales, and exclusive trade discounts.")
+  contactPhone       String   @default("020 275 1082")
+  contactAddress     String   @default("Darkuman, Accra, Ghana")
+  openingHours       String   @default("07:30 - 21:30 DAILY")
+  updatedAt          DateTime @updatedAt
+}

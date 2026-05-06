@@ -7,8 +7,30 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
+import multer from "multer";
+import fs from "fs";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, "public", "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Multer config
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -16,9 +38,67 @@ const prisma = new PrismaClient({ adapter });
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3001;
 
   app.use(express.json());
+  
+  // Serve static files from public/uploads
+  app.use("/uploads", express.static(uploadDir));
+
+  // Site Config API (Priority)
+  app.get("/api/config", async (req, res) => {
+    console.log("GET /api/config called");
+    try {
+      const config = await (prisma as any).siteConfig.upsert({
+        where: { id: "default" },
+        update: {},
+        create: { id: "default" }
+      });
+      return res.json(config);
+    } catch (error) {
+      console.error("Error in GET /api/config:", error);
+      // Return a default config object instead of failing
+      return res.json({
+        id: "default",
+        heroTitle: "China Economic Mall",
+        heroSubtitle: "Accra's Premier Trade Destination",
+        heroDescription: "Hundreds of stores. Unbeatable prices.",
+        heroVideo: "/Mall 1.mp4",
+        promoTitle: "Mid-Year Mega Sale",
+        promoSubtitle: "Promotion",
+        promoDiscount: "40%",
+        loyaltyTitle: "Join Our Gold Rewards Tier",
+        loyaltyDescription: "Earn points on every purchase...",
+        contactPhone: "020 275 1082",
+        contactAddress: "Darkuman, Accra, Ghana",
+        openingHours: "07:30 - 21:30 DAILY"
+      });
+    }
+  });
+
+  app.put("/api/config", async (req, res) => {
+    console.log("PUT /api/config called", req.body);
+    try {
+      const config = await (prisma as any).siteConfig.update({
+        where: { id: "default" },
+        data: req.body
+      });
+      res.json(config);
+    } catch (error) {
+      console.error("Error in PUT /api/config:", error);
+      res.status(500).json({ error: "Failed to update config" });
+    }
+  });
+
+  // Upload API
+  app.post("/api/upload", upload.array("files"), (req, res) => {
+    const files = req.files as Express.Multer.File[];
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: "No files uploaded" });
+    }
+    const urls = files.map(file => `/uploads/${file.filename}`);
+    res.json({ urls });
+  });
 
   // API Routes
   app.get("/api/stores", async (req, res) => {
