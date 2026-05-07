@@ -19,27 +19,7 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Helper to recursively shrink Unsplash images while preserving other types (like Dates)
-function shrinkUnsplash(obj: any): any {
-  if (obj === null || typeof obj !== 'object') {
-    if (typeof obj === 'string' && obj.includes('images.unsplash.com')) {
-      return obj.replace(/w=\d+/g, 'w=400');
-    }
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map(item => shrinkUnsplash(item));
-  }
-
-  const result: any = {};
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      result[key] = shrinkUnsplash(obj[key]);
-    }
-  }
-  return result;
-}
+// No helper needed here anymore, we'll do it inline for maximum safety and performance
 
 // Multer config
 const storage = multer.diskStorage({
@@ -133,7 +113,10 @@ async function startServer() {
           reviews: true
         }
       });
-      res.json(shrinkUnsplash(stores));
+      const json = JSON.stringify(stores);
+      const optimized = json.replace(/w=\d+/g, 'w=400');
+      res.setHeader('Content-Type', 'application/json');
+      res.send(optimized);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch stores" });
     }
@@ -178,7 +161,10 @@ async function startServer() {
       const products = await prisma.product.findMany({
         include: { store: true }
       });
-      res.json(shrinkUnsplash(products));
+      const json = JSON.stringify(products);
+      const optimized = json.replace(/w=\d+/g, 'w=400');
+      res.setHeader('Content-Type', 'application/json');
+      res.send(optimized);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch products" });
     }
