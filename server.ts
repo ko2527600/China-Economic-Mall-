@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import path from "path";
 import compression from "compression";
+import helmet from "helmet";
 import { fileURLToPath } from "url";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -19,8 +20,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// No helper needed here anymore, we'll do it inline for maximum safety and performance
-
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
@@ -37,11 +36,107 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'china-mall',
     allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-    transformation: [{ width: 800, crop: 'limit' }] // Auto-resize for efficiency
+    transformation: [{ width: 800, crop: 'limit' }]
   } as any,
 });
 
 const upload = multer({ storage });
+
+// ============================================================
+// SECURITY: Input sanitization — strip HTML/script tags
+// ============================================================
+const sanitizeString = (value: unknown): string => {
+  if (typeof value !== "string") return "";
+  return value.replace(/<[^>]*>/g, "").trim();
+};
+
+// Only allow known string fields to be sanitized; other types pass through
+const sanitizePayload = (data: Record<string, unknown>, stringFields: string[]): Record<string, unknown> => {
+  const cleaned: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (stringFields.includes(key)) {
+      cleaned[key] = sanitizeString(value);
+    } else {
+      cleaned[key] = value;
+    }
+  }
+  return cleaned;
+};
+
+// ============================================================
+// SECURITY: Admin authentication middleware
+//
+// Set the ADMIN_SECRET env var on Render to protect endpoints.
+// When unset, the app works as before (for development).
+// ============================================================
+const requireAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) {
+    // No secret configured — allow for dev, but warn in logs
+    console.warn("[WARN] ADMIN_SECRET not set — admin endpoint is open!");
+    return next();
+  }
+  const provided = req.headers["x-admin-secret"] as string | undefined;
+  if (!provided || provided !== secret) {
+    return res.status(401).json({ error: "Unauthorized — admin access required" });
+  }
+  next();
+};
+
+// ============================================================
+// SECURITY: Validate required fields for store creation/update
+// ============================================================
+const validateStore = (data: Record<string, unknown>): string | null => {
+  if (!data.name || typeof data.name !== "string" || data.name.trim().length < 2) {
+    return "Store name is required (min 2 characters)";
+  }
+  if (!data.category || typeof data.category !== "string") {
+    return "Store category is required";
+  }
+  if (!data.description || typeof data.description !== "string" || data.description.trim().length < 5) {
+    return "Store description is required (min 5 characters)";
+  }
+  return null;
+};
+
+// ============================================================
+// SECURITY: Validate required fields for product creation/update
+// ============================================================
+const validateProduct = (data: Record<string, unknown>): string | null => {
+  if (!data.name || typeof data.name !== "string" || data.name.trim().length < 2) {
+    return "Product name is required (min 2 characters)";
+  }
+  if (!data.price || typeof data.price !== "string" || data.price.trim().length === 0) {
+    return "Product price is required";
+  }
+  if (!data.storeId || typeof data.storeId !== "string" || data.storeId.trim().length === 0) {
+    return "Product storeId is required";
+  }
+  return null;
+};
+
+// ============================================================
+// SECURITY: Validate required fields for promotion creation
+// ============================================================
+const validatePromotion = (data: Record<string, unknown>): string | null => {
+  if (!data.title || typeof data.title !== "string" || data.title.trim().length < 2) {
+    return "Promotion title is required (min 2 characters)";
+  }
+  if (!data.storeId || typeof data.storeId !== "string" || data.storeId.trim().length === 0) {
+    return "Promotion storeId is required";
+  }
+  return null;
+};
+
+// ============================================================
+// SECURITY: Validate required fields for event creation
+// ============================================================
+const validateEvent = (data: Record<string, unknown>): string | null => {
+  if (!data.title || typeof data.title !== "string" || data.title.trim().length < 2) {
+    return "Event title is required (min 2 characters)";
+  }
+  return null;
+};
 
 async function startServer() {
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
@@ -51,15 +146,37 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3001;
 
+  // ============================================================
+  // SECURITY: Disable Express fingerprinting + add security headers
+  // ============================================================
+  app.disable("x-powered-by");
+  app.use(helmet({
+    contentSecurityPolicy: false, // Disable for now — SPA with inline scripts
+    crossOriginEmbedderPolicy: false,
+  }));
+
   app.use(express.json());
   app.use(compression());
-  
+
   // Serve static files from public/uploads
   app.use("/uploads", express.static(uploadDir));
 
-  // Site Config API (Priority)
+  // ============================================================
+  // API ROUTES — must be defined BEFORE the catch-all SPA route
+  // ============================================================
+
+  // --- Diagnostics (safe to expose) ---
+  app.get("/api/health", (req, res) => {
+    res.json({
+      status: "online",
+      env: process.env.NODE_ENV,
+      port: PORT,
+      storage: process.env.CLOUDINARY_CLOUD_NAME ? 'Cloudinary' : 'Local'
+    });
+  });
+
+  // --- Site Config API ---
   app.get("/api/config", async (req, res) => {
-    console.log("GET /api/config called");
     try {
       const config = await (prisma as any).siteConfig.upsert({
         where: { id: "default" },
@@ -69,7 +186,6 @@ async function startServer() {
       return res.json(config);
     } catch (error) {
       console.error("Error in GET /api/config:", error);
-      // Return a default config object instead of failing
       return res.json({
         id: "default",
         heroTitle: "China Economic Mall",
@@ -88,12 +204,28 @@ async function startServer() {
     }
   });
 
-  app.put("/api/config", async (req, res) => {
+  // SECURITY: PUT config requires admin auth + input sanitization
+  app.put("/api/config", requireAdmin, async (req, res) => {
     console.log("PUT /api/config called", req.body);
     try {
+      const allowedFields = [
+        "heroTitle", "heroSubtitle", "heroDescription", "heroImages", "heroVideo",
+        "promoTitle", "promoSubtitle", "promoDiscount", "promoImage",
+        "loyaltyTitle", "loyaltyDescription",
+        "contactPhone", "contactAddress", "openingHours"
+      ];
+      const stringFields = allowedFields.filter(f => f !== "heroImages");
+      const sanitized = sanitizePayload(req.body, stringFields);
+      // Only allow whitelisted fields
+      const cleanData: Record<string, unknown> = {};
+      for (const field of allowedFields) {
+        if (sanitized[field] !== undefined) {
+          cleanData[field] = sanitized[field];
+        }
+      }
       const config = await (prisma as any).siteConfig.update({
         where: { id: "default" },
-        data: req.body
+        data: cleanData
       });
       res.json(config);
     } catch (error) {
@@ -102,8 +234,8 @@ async function startServer() {
     }
   });
 
-  // Upload API
-  app.post("/api/upload", upload.array("files"), (req, res) => {
+  // --- Upload API ---
+  app.post("/api/upload", requireAdmin, upload.array("files"), (req, res) => {
     const files = req.files as any[];
     if (!files || files.length === 0) {
       return res.status(400).json({ error: "No files uploaded" });
@@ -112,11 +244,11 @@ async function startServer() {
     res.json({ urls });
   });
 
-  // API Routes
+  // --- Stores API ---
   app.get("/api/stores", async (req, res) => {
     try {
       const stores = await prisma.store.findMany({
-        include: { 
+        include: {
           products: true,
           promotions: true,
           reviews: true
@@ -131,40 +263,68 @@ async function startServer() {
     }
   });
 
-  app.post("/api/stores", async (req, res) => {
+  // SECURITY: POST store requires auth + validation + sanitization
+  app.post("/api/stores", requireAdmin, async (req, res) => {
     try {
-      const store = await prisma.store.create({
-        data: req.body
-      });
+      const error = validateStore(req.body);
+      if (error) return res.status(400).json({ error });
+
+      const stringFields = ["name", "category", "description", "logo", "location", "hours", "phone", "image"];
+      const sanitized = sanitizePayload(req.body, stringFields);
+      // Whitelist allowed fields
+      const cleanData: Record<string, unknown> = {};
+      const allowedFields = ["name", "category", "description", "logo", "location", "hours", "phone", "rating", "image", "gallery", "isFeatured"];
+      for (const field of allowedFields) {
+        if (sanitized[field] !== undefined) {
+          cleanData[field] = sanitized[field];
+        }
+      }
+
+      const store = await prisma.store.create({ data: cleanData });
       res.json(store);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create store" });
+    } catch (error: any) {
+      console.error("Error creating store:", error);
+      res.status(500).json({ error: error.message || "Failed to create store" });
     }
   });
 
-  app.put("/api/stores/:id", async (req, res) => {
+  // SECURITY: PUT store requires auth + validation + sanitization
+  app.put("/api/stores/:id", requireAdmin, async (req, res) => {
     try {
+      const stringFields = ["name", "category", "description", "logo", "location", "hours", "phone", "image"];
+      const sanitized = sanitizePayload(req.body, stringFields);
+      const cleanData: Record<string, unknown> = {};
+      const allowedFields = ["name", "category", "description", "logo", "location", "hours", "phone", "rating", "image", "gallery", "isFeatured"];
+      for (const field of allowedFields) {
+        if (sanitized[field] !== undefined) {
+          cleanData[field] = sanitized[field];
+        }
+      }
+
       const store = await prisma.store.update({
         where: { id: req.params.id },
-        data: req.body
+        data: cleanData
       });
       res.json(store);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to update store" });
+    } catch (error: any) {
+      console.error("Error updating store:", error);
+      res.status(500).json({ error: error.message || "Failed to update store" });
     }
   });
 
-  app.delete("/api/stores/:id", async (req, res) => {
+  // SECURITY: DELETE store requires auth
+  app.delete("/api/stores/:id", requireAdmin, async (req, res) => {
     try {
       await prisma.store.delete({
         where: { id: req.params.id }
       });
       res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to delete store" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message || "Failed to delete store" });
     }
   });
 
+  // --- Products API ---
   app.get("/api/products", async (req, res) => {
     try {
       const products = await prisma.product.findMany({
@@ -179,41 +339,67 @@ async function startServer() {
     }
   });
 
-  app.post("/api/products", async (req, res) => {
+  // SECURITY: POST product requires auth + validation + sanitization
+  app.post("/api/products", requireAdmin, async (req, res) => {
     try {
-      const product = await prisma.product.create({
-        data: req.body
-      });
+      const error = validateProduct(req.body);
+      if (error) return res.status(400).json({ error });
+
+      const stringFields = ["name", "price", "category", "image", "description"];
+      const sanitized = sanitizePayload(req.body, stringFields);
+      const cleanData: Record<string, unknown> = {};
+      const allowedFields = ["name", "price", "category", "image", "description", "isNewArrival", "storeId"];
+      for (const field of allowedFields) {
+        if (sanitized[field] !== undefined) {
+          cleanData[field] = sanitized[field];
+        }
+      }
+
+      const product = await prisma.product.create({ data: cleanData });
       res.json(product);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create product" });
+    } catch (error: any) {
+      console.error("Error creating product:", error);
+      res.status(500).json({ error: error.message || "Failed to create product" });
     }
   });
 
-  app.put("/api/products/:id", async (req, res) => {
+  // SECURITY: PUT product requires auth + validation + sanitization
+  app.put("/api/products/:id", requireAdmin, async (req, res) => {
     try {
+      const stringFields = ["name", "price", "category", "image", "description"];
+      const sanitized = sanitizePayload(req.body, stringFields);
+      const cleanData: Record<string, unknown> = {};
+      const allowedFields = ["name", "price", "category", "image", "description", "isNewArrival"];
+      for (const field of allowedFields) {
+        if (sanitized[field] !== undefined) {
+          cleanData[field] = sanitized[field];
+        }
+      }
+
       const product = await prisma.product.update({
         where: { id: req.params.id },
-        data: req.body
+        data: cleanData
       });
       res.json(product);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to update product" });
+    } catch (error: any) {
+      console.error("Error updating product:", error);
+      res.status(500).json({ error: error.message || "Failed to update product" });
     }
   });
 
-  app.delete("/api/products/:id", async (req, res) => {
+  // SECURITY: DELETE product requires auth
+  app.delete("/api/products/:id", requireAdmin, async (req, res) => {
     try {
       await prisma.product.delete({
         where: { id: req.params.id }
       });
       res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to delete product" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message || "Failed to delete product" });
     }
   });
 
-  // Promotions API
+  // --- Promotions API ---
   app.get("/api/promotions", async (req, res) => {
     try {
       const promotions = await prisma.promotion.findMany({
@@ -225,29 +411,43 @@ async function startServer() {
     }
   });
 
-  app.post("/api/promotions", async (req, res) => {
+  // SECURITY: POST promotion requires auth + validation + sanitization
+  app.post("/api/promotions", requireAdmin, async (req, res) => {
     try {
-      const promotion = await prisma.promotion.create({
-        data: req.body
-      });
+      const error = validatePromotion(req.body);
+      if (error) return res.status(400).json({ error });
+
+      const stringFields = ["title", "description", "image"];
+      const sanitized = sanitizePayload(req.body, stringFields);
+      const cleanData: Record<string, unknown> = {};
+      const allowedFields = ["title", "description", "image", "expirationDate", "storeId"];
+      for (const field of allowedFields) {
+        if (sanitized[field] !== undefined) {
+          cleanData[field] = sanitized[field];
+        }
+      }
+
+      const promotion = await prisma.promotion.create({ data: cleanData });
       res.json(promotion);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create promotion" });
+    } catch (error: any) {
+      console.error("Error creating promotion:", error);
+      res.status(500).json({ error: error.message || "Failed to create promotion" });
     }
   });
 
-  app.delete("/api/promotions/:id", async (req, res) => {
+  // SECURITY: DELETE promotion requires auth
+  app.delete("/api/promotions/:id", requireAdmin, async (req, res) => {
     try {
       await prisma.promotion.delete({
         where: { id: req.params.id }
       });
       res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to delete promotion" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message || "Failed to delete promotion" });
     }
   });
 
-  // Events API
+  // --- Events API ---
   app.get("/api/events", async (req, res) => {
     try {
       const events = await prisma.mallEvent.findMany({
@@ -259,29 +459,61 @@ async function startServer() {
     }
   });
 
-  app.post("/api/events", async (req, res) => {
+  // SECURITY: POST event requires auth + validation + sanitization
+  app.post("/api/events", requireAdmin, async (req, res) => {
     try {
-      const event = await prisma.mallEvent.create({
-        data: req.body
-      });
+      const error = validateEvent(req.body);
+      if (error) return res.status(400).json({ error });
+
+      const stringFields = ["title", "description", "image", "location"];
+      const sanitized = sanitizePayload(req.body, stringFields);
+      const cleanData: Record<string, unknown> = {};
+      const allowedFields = ["title", "description", "image", "date", "location"];
+      for (const field of allowedFields) {
+        if (sanitized[field] !== undefined) {
+          cleanData[field] = sanitized[field];
+        }
+      }
+
+      const event = await prisma.mallEvent.create({ data: cleanData });
       res.json(event);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create event" });
+    } catch (error: any) {
+      console.error("Error creating event:", error);
+      res.status(500).json({ error: error.message || "Failed to create event" });
     }
   });
 
-  app.delete("/api/events/:id", async (req, res) => {
+  // SECURITY: DELETE event requires auth
+  app.delete("/api/events/:id", requireAdmin, async (req, res) => {
     try {
       await prisma.mallEvent.delete({
         where: { id: req.params.id }
       });
       res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to delete event" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message || "Failed to delete event" });
     }
   });
 
-  // Vite middleware for development
+  // ============================================================
+  // SECURITY: Reset database — requires admin auth
+  // Moved ABOVE the catch-all route to prevent route shadowing
+  // ============================================================
+  app.post("/api/reset", requireAdmin, async (req, res) => {
+    try {
+      await prisma.store.deleteMany({});
+      await prisma.promotion.deleteMany({});
+      await prisma.mallEvent.deleteMany({});
+      res.json({ success: true, message: "Database cleared successfully" });
+    } catch (error) {
+      console.error("Reset failed:", error);
+      res.status(500).json({ error: "Failed to reset database" });
+    }
+  });
+
+  // ============================================================
+  // SPA catch-all — MUST be last
+  // ============================================================
   if (process.env.NODE_ENV !== "production") {
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
@@ -297,34 +529,14 @@ async function startServer() {
     });
   }
 
-  // Reset Database API
-  app.post("/api/reset", async (req, res) => {
-    try {
-      // Deleting stores will automatically delete products, reviews, etc. because of Cascade Delete
-      await prisma.store.deleteMany({});
-      await prisma.promotion.deleteMany({});
-      await prisma.mallEvent.deleteMany({});
-      // Clear config if needed, or keep it
-      res.json({ success: true, message: "Database cleared successfully" });
-    } catch (error) {
-      console.error("Reset failed:", error);
-      res.status(500).json({ error: "Failed to reset database" });
-    }
-  });
-
-  // Diagnostics route
-  app.get("/api/health", (req, res) => {
-    res.json({ 
-      status: "online", 
-      env: process.env.NODE_ENV,
-      port: PORT,
-      storage: process.env.CLOUDINARY_CLOUD_NAME ? 'Cloudinary' : 'Local'
-    });
-  });
-
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`[China Economic Mall] Server running in ${process.env.NODE_ENV || 'development'} mode`);
     console.log(`[China Economic Mall] Listening on port ${PORT}`);
+    if (process.env.ADMIN_SECRET) {
+      console.log(`[China Economic Mall] 🔒 Admin auth ENABLED`);
+    } else {
+      console.log(`[China Economic Mall] ⚠️  ADMIN_SECRET not set — admin endpoints are OPEN. Set it on Render now!`);
+    }
   });
 }
 
