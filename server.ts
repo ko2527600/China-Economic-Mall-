@@ -19,12 +19,26 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Helper to shrink Unsplash images for mobile performance
+// Helper to recursively shrink Unsplash images while preserving other types (like Dates)
 function shrinkUnsplash(obj: any): any {
-  const json = JSON.stringify(obj);
-  // Replace w=800 or w=1000 or w=something with w=400
-  const optimized = json.replace(/w=\d+/g, 'w=400');
-  return JSON.parse(optimized);
+  if (obj === null || typeof obj !== 'object') {
+    if (typeof obj === 'string' && obj.includes('images.unsplash.com')) {
+      return obj.replace(/w=\d+/g, 'w=400');
+    }
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => shrinkUnsplash(item));
+  }
+
+  const result: any = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      result[key] = shrinkUnsplash(obj[key]);
+    }
+  }
+  return result;
 }
 
 // Multer config
