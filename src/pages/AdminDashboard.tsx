@@ -123,6 +123,26 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [config, setConfig] = useState<any>(null);
 
+  const handleReset = async () => {
+    if (!confirm("CRITICAL WARNING: This will PERMANENTLY DELETE all stores, products, and promotions. There is no undo. Are you absolutely sure?")) return;
+    if (!confirm("Type 'DELETE' in your mind and click OK if you are 100% ready to start fresh.")) return;
+    
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/reset', { method: 'POST' });
+      if (res.ok) {
+        setFeedback({ message: "All data cleared successfully", type: 'success' });
+        fetchData();
+      } else {
+        setFeedback({ message: "Failed to clear database", type: 'error' });
+      }
+    } catch (error) {
+      console.error("Reset failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const seedData = async () => {
     if (!confirm("This will clear existing data and seed from mock data. Continue?")) return;
     setIsLoading(true);
@@ -437,6 +457,12 @@ const AdminDashboard = () => {
               className="bg-white border-2 border-slate-200 text-primary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2"
             >
                <LayoutDashboard size={16} /> Seed Data
+             </button>
+             <button 
+              onClick={handleReset}
+              className="bg-rose-50 border-2 border-rose-200 text-rose-600 px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-rose-600 hover:text-white transition-all flex items-center gap-2"
+            >
+               <Trash2 size={16} /> Clear All Data
              </button>
              <button 
               onClick={() => {

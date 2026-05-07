@@ -297,9 +297,34 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`🚀 Server started in ${process.env.NODE_ENV || 'development'} mode`);
-    console.log(`📡 Listening on 0.0.0.0:${PORT}`);
+  // Reset Database API
+  app.post("/api/reset", async (req, res) => {
+    try {
+      // Deleting stores will automatically delete products, reviews, etc. because of Cascade Delete
+      await prisma.store.deleteMany({});
+      await prisma.promotion.deleteMany({});
+      await prisma.mallEvent.deleteMany({});
+      // Clear config if needed, or keep it
+      res.json({ success: true, message: "Database cleared successfully" });
+    } catch (error) {
+      console.error("Reset failed:", error);
+      res.status(500).json({ error: "Failed to reset database" });
+    }
+  });
+
+  // Diagnostics route
+  app.get("/api/health", (req, res) => {
+    res.json({ 
+      status: "online", 
+      env: process.env.NODE_ENV,
+      port: PORT,
+      storage: process.env.CLOUDINARY_CLOUD_NAME ? 'Cloudinary' : 'Local'
+    });
+  });
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[China Economic Mall] Server running in ${process.env.NODE_ENV || 'development'} mode`);
+    console.log(`[China Economic Mall] Listening on port ${PORT}`);
   });
 }
 
