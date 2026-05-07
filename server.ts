@@ -21,15 +21,24 @@ if (!fs.existsSync(uploadDir)) {
 
 // No helper needed here anymore, we'll do it inline for maximum safety and performance
 
-// Multer config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configure Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'china-mall',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+    transformation: [{ width: 800, crop: 'limit' }] // Auto-resize for efficiency
+  } as any,
 });
 
 const upload = multer({ storage });
@@ -95,11 +104,11 @@ async function startServer() {
 
   // Upload API
   app.post("/api/upload", upload.array("files"), (req, res) => {
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as any[];
     if (!files || files.length === 0) {
       return res.status(400).json({ error: "No files uploaded" });
     }
-    const urls = files.map(file => `/uploads/${file.filename}`);
+    const urls = files.map(file => file.path || file.secure_url);
     res.json({ urls });
   });
 

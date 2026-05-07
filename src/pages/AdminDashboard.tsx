@@ -225,14 +225,19 @@ const AdminDashboard = () => {
         (data as any).isFeatured = (data as any).isFeatured === 'on';
     } else if (modalType === 'product') {
         (data as any).isNewArrival = (data as any).isNewArrival === 'on';
+        
         // Ensure price has the Cedi sign if it's just a number
         if (typeof data.price === 'string' && !data.price.includes('₵')) {
           data.price = `₵${data.price}`;
         }
 
-        // BULK UPLOAD LOGIC: Check for multiple images
+        // Fix for "Vanishing Images": Ensure only ONE image is saved for updates
         const images = (data.image as string).split(',').filter(s => s);
-        if (images.length > 1 && !currentEdit) {
+        if (currentEdit) {
+          // If updating, just use the first image in the list to avoid broken mangled URLs
+          (data as any).image = images[0] || '';
+        } else if (images.length > 1) {
+          // BULK UPLOAD LOGIC: Check for multiple images (Only for NEW products)
           try {
             setIsLoading(true);
             for (const imgUrl of images) {
@@ -494,7 +499,8 @@ const AdminDashboard = () => {
                 <LayoutDashboard className="text-accent mb-4" size={32} />
                 <h3 className="font-black uppercase tracking-widest text-xs text-white/50 mb-1">System Status</h3>
                 <p className="text-2xl font-black uppercase tracking-tighter">Connected</p>
-                <p className="text-[10px] font-black uppercase text-accent tracking-widest mt-2">Database: Prisma/PostgreSQL</p>
+                <p className="text-[10px] font-black uppercase text-accent tracking-widest mt-2 italic">Database: Prisma/PostgreSQL</p>
+                <p className="text-[10px] font-black uppercase text-secondary tracking-widest mt-1 italic">Storage: Cloudinary Persistent</p>
               </div>
            </div>
         )}
