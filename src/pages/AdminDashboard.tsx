@@ -229,6 +229,31 @@ const AdminDashboard = () => {
         if (typeof data.price === 'string' && !data.price.includes('₵')) {
           data.price = `₵${data.price}`;
         }
+
+        // BULK UPLOAD LOGIC: Check for multiple images
+        const images = (data.image as string).split(',').filter(s => s);
+        if (images.length > 1 && !currentEdit) {
+          try {
+            setIsLoading(true);
+            for (const imgUrl of images) {
+              await fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...data, image: imgUrl })
+              });
+            }
+            setFeedback({ message: `Successfully created ${images.length} products`, type: 'success' });
+            setIsModalOpen(false);
+            fetchData();
+            return;
+          } catch (error) {
+            console.error("Bulk upload failed:", error);
+            setFeedback({ message: 'Bulk upload failed', type: 'error' });
+            return;
+          } finally {
+            setIsLoading(false);
+          }
+        }
     } else if (modalType === 'promotion') {
         (data as any).expirationDate = new Date(data.expirationDate as string).toISOString();
     } else if (modalType === 'event') {
@@ -901,8 +926,9 @@ const AdminDashboard = () => {
                       </div>
                       <div className="md:col-span-2">
                         <ImageUploadField 
-                          label="Product Image" 
+                          label="Product Images (Select multiple for bulk upload)" 
                           name="image" 
+                          multiple={true}
                           defaultValue={currentEdit?.image} 
                         />
                       </div>
