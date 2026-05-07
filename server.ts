@@ -115,7 +115,7 @@ async function startServer() {
       });
       const json = JSON.stringify(stores);
       const optimized = json.replace(/w=\d+/g, 'w=400');
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.send(optimized);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch stores" });
@@ -163,7 +163,7 @@ async function startServer() {
       });
       const json = JSON.stringify(products);
       const optimized = json.replace(/w=\d+/g, 'w=400');
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.send(optimized);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch products" });

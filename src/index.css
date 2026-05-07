@@ -38,6 +38,11 @@
   h1, h2, h3 {
     @apply font-display font-bold;
   }
+
+  /* Support for Ghana Cedi Symbol */
+  .currency-ghana {
+    font-family: 'DM Sans', sans-serif;
+  }
 }
 
 /* CEM Professional Utility Classes */

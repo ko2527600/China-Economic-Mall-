@@ -221,11 +221,18 @@ const AdminDashboard = () => {
     if (modalType === 'store') {
         const galleryInput = (data.gallery as string).split(',').map(s => s.trim()).filter(s => s);
         (data as any).gallery = galleryInput;
-        // Basic numbers conversion
         (data as any).rating = parseFloat(data.rating as string) || 0;
         (data as any).isFeatured = (data as any).isFeatured === 'on';
-    } else {
+    } else if (modalType === 'product') {
         (data as any).isNewArrival = (data as any).isNewArrival === 'on';
+        // Ensure price has the Cedi sign if it's just a number
+        if (typeof data.price === 'string' && !data.price.includes('₵')) {
+          data.price = `₵${data.price}`;
+        }
+    } else if (modalType === 'promotion') {
+        (data as any).expirationDate = new Date(data.expirationDate as string).toISOString();
+    } else if (modalType === 'event') {
+        (data as any).date = new Date(data.date as string).toISOString();
     }
 
     const endpointMap: Record<string, string> = {
@@ -871,8 +878,11 @@ const AdminDashboard = () => {
                         <input name="name" required defaultValue={currentEdit?.name} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Price (e.g. GHS 120)</label>
-                        <input name="price" required defaultValue={currentEdit?.price} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Price (e.g. 4,500)</label>
+                        <div className="relative">
+                          <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-accent text-lg">₵</span>
+                          <input name="price" required defaultValue={currentEdit?.price?.replace('₵', '')} className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-12 pr-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                        </div>
                       </div>
                       <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Store</label>
