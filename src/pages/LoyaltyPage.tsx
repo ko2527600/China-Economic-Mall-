@@ -1,9 +1,10 @@
-
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Award, Gift, Zap, ShieldCheck, History, ArrowRight, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const LoyaltyPage = () => {
+  const { t } = useTranslation();
   const [config, setConfig] = React.useState<any>(null);
 
   React.useEffect(() => {
@@ -14,22 +15,22 @@ const LoyaltyPage = () => {
   }, []);
 
   const tiers = [
-    { name: 'Bronze', points: '0-500', color: 'text-amber-700', bg: 'bg-amber-100', active: true },
-    { name: 'Silver', points: '501-2000', color: 'text-slate-500', bg: 'bg-slate-100', active: false },
-    { name: 'Gold', points: '2001+', color: 'text-yellow-600', bg: 'bg-yellow-100', active: false },
+    { name: t('loyalty.bronze'), points: '0-500', color: 'text-amber-700', bg: 'bg-amber-100', active: true },
+    { name: t('loyalty.silver'), points: '501-2000', color: 'text-slate-500', bg: 'bg-slate-100', active: false },
+    { name: t('loyalty.gold'), points: '2001+', color: 'text-yellow-600', bg: 'bg-yellow-100', active: false },
   ];
 
   const benefits = [
-    { icon: Zap, title: 'Early Access', desc: 'Get notified about sales 24h before everyone else.' },
-    { icon: Gift, title: 'Birthday Reward', desc: 'Special discount voucher on your birthday.' },
-    { icon: ShieldCheck, title: 'Warranty Plus', desc: 'Extended 6-month warranty on electronics.' },
+    { icon: Zap, title: t('nav.products') === '商品' ? '抢先体验' : 'Early Access', desc: t('nav.products') === '商品' ? '比其他人提前24小时获知促销信息。' : 'Get notified about sales 24h before everyone else.' },
+    { icon: Gift, title: t('nav.products') === '商品' ? '生日奖励' : 'Birthday Reward', desc: t('nav.products') === '商品' ? '生日当天可获得专属折扣券。' : 'Special discount voucher on your birthday.' },
+    { icon: ShieldCheck, title: t('nav.products') === '商品' ? '延保服务' : 'Warranty Plus', desc: t('nav.products') === '商品' ? '电子产品额外延长6个月保修。' : 'Extended 6-month warranty on electronics.' },
   ];
 
   return (
     <div className="flex flex-col gap-8 py-10 px-6 max-w-7xl mx-auto w-full pb-24">
       <div>
-         <h1 className="text-sm font-black uppercase text-slate-400 tracking-widest">Mall Rewards</h1>
-         <h2 className="text-4xl font-black uppercase tracking-tight">Your <span className="text-accent underline decoration-yellow-400 decoration-4 underline-offset-4">Status</span></h2>
+         <h1 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('loyalty.sectionLabel')}</h1>
+         <h2 className="text-4xl font-black uppercase tracking-tight">{t('loyalty.title')}</h2>
       </div>
 
       {/* Member Card */}
@@ -41,24 +42,24 @@ const LoyaltyPage = () => {
                      <Award size={32} className="text-secondary" />
                   </div>
                   <div>
-                     <p className="text-[10px] uppercase font-black tracking-[0.3em] text-white/50 mb-0.5">Verified Member</p>
+                     <p className="text-[10px] uppercase font-black tracking-[0.3em] text-white/50 mb-0.5">{t('nav.products') === '商品' ? '认证会员' : 'Verified Member'}</p>
                      <p className="text-xl font-black tracking-tight uppercase italic">KWAME MENSAH</p>
                   </div>
                </div>
                <div className="bg-accent text-white text-[10px] font-black px-4 py-1.5 rounded-xl uppercase tracking-widest shadow-lg">
-                  GOLD TIER
+                  {t('loyalty.gold').toUpperCase()} {t('nav.products') === '商品' ? '等级' : 'TIER'}
                </div>
             </div>
 
             <div>
-               <p className="text-xs text-white/50 font-black uppercase tracking-widest mb-2">Cumulative Rewards Balance</p>
-               <h2 className="text-6xl font-black text-secondary tracking-tighter">1,240 <span className="text-xl text-white/40 uppercase tracking-widest ml-2 italic">points</span></h2>
+               <p className="text-xs text-white/50 font-black uppercase tracking-widest mb-2">{t('nav.products') === '商品' ? '累计奖励余额' : 'Cumulative Rewards Balance'}</p>
+               <h2 className="text-6xl font-black text-secondary tracking-tighter">1,240 <span className="text-xl text-white/40 uppercase tracking-widest ml-2 italic">{t('loyalty.points')}</span></h2>
             </div>
 
             <div className="space-y-3">
                <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-white/60">
-                  <span>Progress to Diamond</span>
-                  <span>760 pts to next level</span>
+                  <span>{t('nav.products') === '商品' ? '钻石等级进度' : 'Progress to Diamond'}</span>
+                  <span>760 {t('loyalty.pointsToNext')}</span>
                </div>
                <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden border border-white/5 shadow-inner">
                   <motion.div 
@@ -77,7 +78,7 @@ const LoyaltyPage = () => {
 
       {/* Benefits */}
       <section>
-         <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest mb-6">Tier Advantages</h2>
+         <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest mb-6">{t('loyalty.benefits')}</h2>
          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {benefits.map(benefit => (
                <div key={benefit.title} className="bg-white p-8 rounded-[2rem] border-2 border-slate-50 flex flex-col gap-5 group hover:border-accent transition-colors">
@@ -95,22 +96,22 @@ const LoyaltyPage = () => {
 
       {/* Tiers List */}
       <section>
-         <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest mb-6">Available Tiers</h2>
+         <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest mb-6">{t('nav.products') === '商品' ? '可用等级' : 'Available Tiers'}</h2>
          <div className="flex flex-col gap-4">
             {tiers.map(tier => (
-               <div key={tier.name} className={`p-6 rounded-3xl border-2 flex items-center justify-between transition-all ${tier.name === 'Gold' ? 'bg-white border-accent shadow-xl py-8 scale-[1.02]' : 'bg-slate-50 border-slate-100 grayscale opacity-60'}`}>
+               <div key={tier.name} className={`p-6 rounded-3xl border-2 flex items-center justify-between transition-all ${tier.name === t('loyalty.gold') ? 'bg-white border-accent shadow-xl py-8 scale-[1.02]' : 'bg-slate-50 border-slate-100 grayscale opacity-60'}`}>
                   <div className="flex items-center gap-6">
                      <div className={`w-16 h-16 ${tier.bg} rounded-2xl flex items-center justify-center font-black text-2xl italic ${tier.color} shadow-inner`}>
                         {tier.name.charAt(0)}
                      </div>
                      <div>
-                        <p className="font-black text-lg tracking-tight uppercase">{tier.name} Level Access</p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{tier.points} Points Bracket</p>
+                        <p className="font-black text-lg tracking-tight uppercase">{tier.name} {t('nav.products') === '商品' ? '等级权限' : 'Level Access'}</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{tier.points} {t('nav.products') === '商品' ? '积分区间' : 'Points Bracket'}</p>
                      </div>
                   </div>
-                  {tier.name === 'Gold' ? (
+                  {tier.name === t('loyalty.gold') ? (
                      <div className="bg-accent text-white px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                        <Award size={14} /> ACTIVE TIER
+                        <Award size={14} /> {t('nav.products') === '商品' ? '当前等级' : 'ACTIVE TIER'}
                      </div>
                   ) : (
                      <div className="text-slate-300"><ChevronRight size={24} /></div>
@@ -127,8 +128,8 @@ const LoyaltyPage = () => {
                <History size={32} className="text-secondary" />
             </div>
             <div className="text-left">
-               <h3 className="font-black text-xl uppercase tracking-tight italic">Transaction Logs</h3>
-               <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] mt-1">Audit your points history</p>
+               <h3 className="font-black text-xl uppercase tracking-tight italic">{t('nav.products') === '商品' ? '交易记录' : 'Transaction Logs'}</h3>
+               <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em] mt-1">{t('nav.products') === '商品' ? '查看积分历史' : 'Audit your points history'}</p>
             </div>
          </div>
          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-accent transition-all">

@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   PiHouseDuotone, 
   PiStorefrontDuotone, 
@@ -20,10 +20,16 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const Navbar = () => {
+  const { t, i18n } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+
+  const toggleLang = () => {
+    const newLang = i18n.language === 'en' ? 'zh' : 'en';
+    i18n.changeLanguage(newLang);
+  };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchValue.trim()) {
@@ -33,11 +39,11 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { icon: PiHouseDuotone, label: 'Home', path: '/' },
-    { icon: PiStorefrontDuotone, label: 'Stores', path: '/stores' },
-    { icon: PiShoppingCartDuotone, label: 'Products', path: '/products' },
-    { icon: PiTagDuotone, label: 'Promos', path: '/promotions' },
-    { icon: PiMedalDuotone, label: 'Loyalty', path: '/loyalty' },
+    { icon: PiHouseDuotone, label: t('nav.home'), path: '/' },
+    { icon: PiStorefrontDuotone, label: t('nav.stores'), path: '/stores' },
+    { icon: PiShoppingCartDuotone, label: t('nav.products'), path: '/products' },
+    { icon: PiTagDuotone, label: t('nav.promos'), path: '/promotions' },
+    { icon: PiMedalDuotone, label: t('nav.loyalty'), path: '/loyalty' },
   ];
 
   const Logo = () => (
@@ -90,7 +96,7 @@ const Navbar = () => {
         </div>
 
         {/* Right side Actions */}
-        <div className="flex items-center gap-6 ml-8">
+        <div className="flex items-center gap-4 ml-8">
           <div className="relative group">
             <PiMagnifyingGlassDuotone 
               className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-text group-focus-within:text-primary transition-colors" 
@@ -98,13 +104,23 @@ const Navbar = () => {
             />
             <input 
               type="text" 
-              placeholder="Search mall..." 
+              placeholder={t('nav.searchPlaceholder')} 
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onKeyDown={handleSearch}
               className="bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-4 h-11 text-xs w-48 lg:w-64 focus:w-80 focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all outline-none font-medium shadow-inner"
             />
           </div>
+
+          {/* Language Toggle */}
+          <button
+            onClick={toggleLang}
+            className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-border-color hover:border-primary transition-all text-xs font-bold"
+            title={i18n.language === 'en' ? 'Switch to Chinese' : '切换回英文'}
+          >
+            <span className="text-base">{i18n.language === 'en' ? '🇨🇳' : '🇬🇧'}</span>
+            <span>{i18n.language === 'en' ? '中文' : 'EN'}</span>
+          </button>
         </div>
       </nav>
 
@@ -121,12 +137,22 @@ const Navbar = () => {
           <Logo />
         </NavLink>
         
-        <button 
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-primary p-2"
-        >
-          {isMobileMenuOpen ? <PiXBold size={28} /> : <PiListBold size={28} />}
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Mobile Language Toggle */}
+          <button
+            onClick={toggleLang}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-color text-xs font-bold"
+          >
+            <span className="text-sm">{i18n.language === 'en' ? '🇨🇳' : '🇬🇧'}</span>
+            <span>{i18n.language === 'en' ? '中文' : 'EN'}</span>
+          </button>
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-primary p-2"
+          >
+            {isMobileMenuOpen ? <PiXBold size={28} /> : <PiListBold size={28} />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Slide-down Menu */}
@@ -145,7 +171,7 @@ const Navbar = () => {
                 <PiMagnifyingGlassDuotone className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-text" size={20} />
                 <input 
                   type="text" 
-                  placeholder="Search stores, products..." 
+                  placeholder={t('nav.searchPlaceholderMobile')} 
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   onKeyDown={handleSearch}

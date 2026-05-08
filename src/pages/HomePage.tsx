@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   PiDeviceMobile,
@@ -28,7 +28,6 @@ const Typewriter = ({ text, delay = 100 }: { text: string, delay?: number }) => 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    // Reset if text changes
     setCurrentText('');
     setCurrentIndex(0);
   }, [text]);
@@ -39,10 +38,8 @@ const Typewriter = ({ text, delay = 100 }: { text: string, delay?: number }) => 
         setCurrentText(prevText => prevText + text[currentIndex]);
         setCurrentIndex(prevIndex => prevIndex + 1);
       }, delay);
-
       return () => clearTimeout(timeout);
     } else {
-      // Loop back after 3 seconds
       const loopTimeout = setTimeout(() => {
         setCurrentText('');
         setCurrentIndex(0);
@@ -59,18 +56,19 @@ const Typewriter = ({ text, delay = 100 }: { text: string, delay?: number }) => 
 };
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const [dbStores, setDbStores] = useState<any[]>([]);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
   const [config, setConfig] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const categories = [
-    { name: 'Electronics', icon: PiDeviceMobile },
-    { name: 'Fashion', icon: PiTShirt },
-    { name: 'Groceries', icon: PiBasket },
-    { name: 'Home', icon: PiHouse },
-    { name: 'Kitchen', icon: PiCookingPot },
-    { name: 'Furniture', icon: PiArmchair },
+    { name: t('nav.products') === '商品' ? '电子产品' : 'Electronics', icon: PiDeviceMobile },
+    { name: t('nav.products') === '商品' ? '时尚服饰' : 'Fashion', icon: PiTShirt },
+    { name: t('nav.products') === '商品' ? '食品杂货' : 'Groceries', icon: PiBasket },
+    { name: t('nav.products') === '商品' ? '家居用品' : 'Home', icon: PiHouse },
+    { name: t('nav.products') === '商品' ? '厨房用具' : 'Kitchen', icon: PiCookingPot },
+    { name: t('nav.products') === '商品' ? '家具' : 'Furniture', icon: PiArmchair },
   ];
 
   useEffect(() => {
@@ -108,11 +106,11 @@ const HomePage = () => {
   ];
 
   const mallVideos = [
-    { id: 'v1', src: '/Mall 1.mp4', title: 'Grand Mall Tour' },
-    { id: 'v2', src: '/Mall 2.mp4', title: 'Luxury Aisles' },
-    { id: 'v3', src: '/Mall 3.mp4', title: 'Modern Facade' },
-    { id: 'v4', src: '/Mall 4.mp4', title: 'Elite Stores' },
-    { id: 'v5', src: '/Mall 5.mp4', title: 'Shopping Vibes' }
+    { id: 'v1', src: '/Mall 1.mp4', title: t('nav.products') === '商品' ? '商城全景' : 'Grand Mall Tour' },
+    { id: 'v2', src: '/Mall 2.mp4', title: t('nav.products') === '商品' ? '豪华走廊' : 'Luxury Aisles' },
+    { id: 'v3', src: '/Mall 3.mp4', title: t('nav.products') === '商品' ? '现代外观' : 'Modern Facade' },
+    { id: 'v4', src: '/Mall 4.mp4', title: t('nav.products') === '商品' ? '精英店铺' : 'Elite Stores' },
+    { id: 'v5', src: '/Mall 5.mp4', title: t('nav.products') === '商品' ? '购物氛围' : 'Shopping Vibes' }
   ];
 
   const [activeVideo, setActiveVideo] = React.useState<string | null>(null);
@@ -164,7 +162,7 @@ const HomePage = () => {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="flex flex-col"
           >
-            <span className="cem-section-label mb-4">{config?.heroSubtitle || "Accra's Premier Trade Destination"}</span>
+            <span className="cem-section-label mb-4">{config?.heroSubtitle || t('home.sectionLabel')}</span>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[1.1] tracking-tighter mb-6 uppercase italic min-h-[3em]">
               <Typewriter
                 text={config?.heroTitle ? config.heroTitle.replace(/ /g, '\n') : "China\nEconomic\nMall"}
@@ -174,24 +172,24 @@ const HomePage = () => {
             <div className="cem-divider mb-8" />
 
             <p className="text-muted-text text-lg md:text-xl font-medium leading-relaxed max-w-xl mb-10">
-              {config?.heroDescription || "Hundreds of stores. Unbeatable prices. From cutting-edge electronics to high-street fashion — discover everything you need all under one roof."}
+              {config?.heroDescription || t('home.earnPoints')}
             </p>
 
             <div className="flex flex-wrap gap-4 mb-16">
               <Link to="/stores" className="cem-btn-primary flex items-center gap-3 italic">
-                Explore Stores <PiArrowRightBold size={18} />
+                {t('home.exploreStores')} <PiArrowRightBold size={18} />
               </Link>
               <Link to="/promotions" className="cem-btn-outline flex items-center gap-3 italic">
-                View Deals <PiTrendUpBold size={18} />
+                {t('home.viewDeals')} <PiTrendUpBold size={18} />
               </Link>
             </div>
 
             {/* Stats Row */}
             <div className="flex items-center gap-8 md:gap-12">
               {[
-                { val: '500+', lab: 'Stores' },
-                { val: '10K+', lab: 'Products' },
-                { val: 'Daily', lab: 'Hot Deals' }
+                { val: '500+', lab: t('home.stats.stores') },
+                { val: '10K+', lab: t('home.stats.products') },
+                { val: t('nav.products') === '商品' ? '每日' : 'Daily', lab: t('home.stats.hotDeals') }
               ].map((stat, i) => (
                 <motion.div
                   key={stat.lab}
@@ -238,7 +236,7 @@ const HomePage = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-primary-bg via-transparent to-transparent opacity-80" />
 
               <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                <span className="cem-badge-gold">Now Open</span>
+                <span className="cem-badge-gold">{t('home.nowOpen')}</span>
                 <span className="text-[10px] text-body-text/60 font-black uppercase tracking-widest bg-white/5 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
                   Darkuman circle
                 </span>
@@ -265,11 +263,11 @@ const HomePage = () => {
       <section className="px-6 max-w-7xl mx-auto w-full">
         <div className="flex items-center justify-between mb-8">
           <div className="flex flex-col">
-            <h2 className="text-[10px] font-black uppercase text-gold-accent tracking-[0.4em] mb-1">Explore Departments</h2>
-            <h3 className="text-3xl font-display font-black uppercase tracking-tight">Mall <span className="cem-gradient-text uppercase">Directory</span></h3>
+            <h2 className="text-[10px] font-black uppercase text-gold-accent tracking-[0.4em] mb-1">{t('home.exploreDepartments')}</h2>
+            <h3 className="text-3xl font-display font-black uppercase tracking-tight">{t('home.mallDirectory')}</h3>
           </div>
           <Link to="/stores" className="text-gold-accent text-[10px] font-black uppercase tracking-widest flex items-center gap-2 group hover:underline bg-elevated-surface px-6 py-3 rounded-xl transition-all hover:bg-gold-accent/5">
-            View All Stores <PiArrowRightBold size={14} className="group-hover:translate-x-1 transition-transform" />
+            {t('home.viewAllStores')} <PiArrowRightBold size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -295,10 +293,10 @@ const HomePage = () => {
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xs font-black uppercase text-muted-text tracking-widest flex items-center gap-3">
             <PiShoppingCartBold size={20} className="text-gold-accent" />
-            Trending Products
+            {t('home.trendingProducts')}
           </h2>
           <Link to="/products" className="text-gold-accent text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:underline">
-            Shop Catalog <PiArrowRightBold size={14} />
+            {t('home.shopCatalog')} <PiArrowRightBold size={14} />
           </Link>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -310,7 +308,7 @@ const HomePage = () => {
             <Link key={product.id} to="/products" className="cem-card flex flex-col group p-2 interactive-hover overflow-hidden">
               <div className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-slate-50">
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" loading="lazy" />
-                <div className="absolute top-2 left-2 px-2 py-0.5 bg-accent text-white font-black text-[8px] rounded uppercase">Hot</div>
+                <div className="absolute top-2 left-2 px-2 py-0.5 bg-accent text-white font-black text-[8px] rounded uppercase">{t('home.hot')}</div>
               </div>
               <div className="px-3 pb-3">
                 <h3 className="font-display font-semibold text-sm text-body-text uppercase tracking-tight mb-2 truncate group-hover:text-primary transition-colors">{product.name}</h3>
@@ -349,10 +347,10 @@ const HomePage = () => {
             transition={{ duration: 0.8 }}
           >
             <span className="text-secondary font-black text-xs uppercase tracking-[0.5em] mb-4 block min-h-[1.5em]">
-              <Typewriter text="Unmatched Scale" delay={150} />
+              <Typewriter text={t('home.unmatchedScale')} delay={150} />
             </span>
             <h2 className="text-white text-4xl md:text-7xl lg:text-8xl font-display font-black uppercase italic tracking-tighter leading-[0.85] min-h-[2.5em]">
-              <Typewriter text="The Heart of West African Trade" delay={120} />
+              <Typewriter text={t('home.heartOfTrade')} delay={120} />
             </h2>
           </motion.div>
         </div>
@@ -363,7 +361,7 @@ const HomePage = () => {
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xs font-black uppercase text-muted-text tracking-widest flex items-center gap-3">
             <PiTrendUpBold size={20} className="text-action-red" />
-            {config?.promoTitle || "Mid-Year Mega Sale"}
+            {config?.promoTitle || t('home.midYearSale')}
           </h2>
         </div>
         <div className="flex gap-8 overflow-x-auto pb-6 no-scrollbar">
@@ -372,7 +370,7 @@ const HomePage = () => {
               <div className="relative aspect-[21/9]">
                 <img src={promo.image} alt={promo.title} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700" />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-action-red text-white text-[10px] font-black px-4 py-1.5 rounded-lg uppercase tracking-wider shadow-lg">{config?.promoSubtitle || "Promotion"}</span>
+                  <span className="bg-action-red text-white text-[10px] font-black px-4 py-1.5 rounded-lg uppercase tracking-wider shadow-lg">{config?.promoSubtitle || t('nav.promos')}</span>
                 </div>
               </div>
               <div className="p-8 bg-elevated-surface relative border-t border-border-color">
@@ -392,9 +390,9 @@ const HomePage = () => {
       <section className="px-6 max-w-7xl mx-auto w-full">
         <div className="flex items-center justify-between mb-10">
           <div className="flex flex-col">
-            <h2 className="text-[10px] font-black uppercase text-gold-accent tracking-[0.4em] mb-2">Live from Darkuman</h2>
+            <h2 className="text-[10px] font-black uppercase text-gold-accent tracking-[0.4em] mb-2">{t('home.liveFromDarkuman')}</h2>
             <h3 className="text-3xl font-display font-black uppercase tracking-tight flex items-center gap-3">
-              Mall <span className="cem-gradient-text uppercase">Spotlight</span>
+              {t('home.mallSpotlight')}
               <PiCameraBold size={24} className="text-gold-accent" />
             </h3>
           </div>
@@ -433,7 +431,7 @@ const HomePage = () => {
                   </div>
                   <div className="relative z-10 translate-y-2 group-hover:translate-y-0 transition-transform">
                     <p className="text-secondary font-black uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" /> Live Now
+                      <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" /> {t('home.liveNow')}
                     </p>
                     <h4 className="text-white font-display font-bold text-2xl uppercase tracking-tighter leading-none">{video.title}</h4>
                   </div>
@@ -481,7 +479,7 @@ const HomePage = () => {
       {/* Featured Stores */}
       <section className="px-6 max-w-7xl mx-auto w-full">
         <div className="flex items-center justify-between mb-10">
-          <h2 className="text-xs font-black uppercase text-muted-text tracking-[0.3em]">Explore Popular Stores</h2>
+          <h2 className="text-xs font-black uppercase text-muted-text tracking-[0.3em]">{t('home.explorePopularStores')}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {isLoading ? (
@@ -520,7 +518,7 @@ const HomePage = () => {
             ))
           ) : (
             <div className="col-span-full py-20 text-center text-muted-text font-black uppercase tracking-widest bg-card-surface rounded-[2.5rem] border border-dashed border-border-color">
-              No featured stores yet
+              {t('home.noFeaturedStores')}
             </div>
           )}
         </div>
@@ -548,7 +546,7 @@ const HomePage = () => {
           <div className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-[100px] z-10" />
 
           <div className="relative z-10 max-w-lg">
-            <span className="text-secondary font-black text-xs uppercase tracking-[0.4em] mb-6 block">Membership Status</span>
+            <span className="text-secondary font-black text-xs uppercase tracking-[0.4em] mb-6 block">{t('home.membershipStatus')}</span>
             <h2 className="text-4xl md:text-6xl font-display font-black mb-6 leading-[0.9] uppercase italic text-white">
               {config?.loyaltyTitle ? (
                 <>
@@ -556,24 +554,24 @@ const HomePage = () => {
                   <span className="text-secondary uppercase">{config.loyaltyTitle.split(' ').slice(-2).join(' ')}</span>
                 </>
               ) : (
-                <>Join Our Gold <br /><span className="text-secondary uppercase">Rewards Tier</span></>
+                <>{t('home.joinGold')}</>
               )}
             </h2>
-            <p className="text-white/70 text-lg mb-10 font-medium leading-relaxed">{config?.loyaltyDescription || "Earn points on every purchase and get early access to major mall events, seasonal sales, and exclusive trade discounts."}</p>
+            <p className="text-white/70 text-lg mb-10 font-medium leading-relaxed">{config?.loyaltyDescription || t('home.earnPoints')}</p>
             <Link to="/loyalty" className="bg-secondary text-primary px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-secondary/90 transition-all italic flex items-center gap-4 text-sm">
-              Start Earning Points <PiGiftBold size={22} />
+              {t('home.startEarningPoints')} <PiGiftBold size={22} />
             </Link>
           </div>
           <div className="relative z-10 w-full md:w-auto flex flex-col items-center">
             <PiMedalBold className="text-white/5 -rotate-12 absolute -z-10" size={400} />
             <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-10 rounded-[2.5rem] text-center w-full max-w-[320px] shadow-2xl">
               <p className="text-5xl font-display font-black text-secondary tracking-tighter mb-2">1,240</p>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">Current Member Pts</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">{t('home.currentMemberPts')}</p>
               <div className="mt-8 pt-8 border-t border-white/10">
                 <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full w-[65%] bg-secondary shadow-lg shadow-secondary/20" />
                 </div>
-                <p className="text-[9px] font-black uppercase text-secondary mt-3">65% to Gold Status</p>
+                <p className="text-[9px] font-black uppercase text-secondary mt-3">65% {t('home.toGoldStatus')}</p>
               </div>
             </div>
           </div>

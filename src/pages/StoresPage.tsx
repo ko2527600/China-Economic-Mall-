@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   PiMagnifyingGlassDuotone, 
   PiFunnelDuotone, 
@@ -18,6 +18,7 @@ const CATEGORIES: Category[] = [
 ];
 
 const StoresPage = () => {
+  const { t } = useTranslation();
   const [stores, setStores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams] = useSearchParams();
@@ -58,13 +59,13 @@ const StoresPage = () => {
     <div className="flex flex-col gap-10 py-12 px-6 max-w-7xl mx-auto w-full pb-32">
       {/* Header */}
       <div className="flex flex-col">
-        <span className="cem-section-label mb-2">Browse & Discover</span>
+        <span className="cem-section-label mb-2">{t('stores.sectionLabel')}</span>
         <h1 className="text-4xl md:text-5xl font-display font-black uppercase tracking-tight mb-4">
-          Our <span className="cem-gradient-text uppercase">Stores</span>
+          {t('stores.title')}
         </h1>
         <div className="cem-divider" />
         <p className="text-muted-text max-w-2xl mt-6 text-lg font-medium leading-relaxed">
-          Navigate through our diverse collection of premium outlets and local favorites. Quality and affordability in every corner of the mall.
+          {t('stores.subtitle')}
         </p>
       </div>
 
@@ -73,7 +74,7 @@ const StoresPage = () => {
         <div className="relative flex-1 group">
           <input 
             type="text" 
-            placeholder="Search stores, brands, or products..." 
+            placeholder={t('stores.searchPlaceholder')} 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="bg-slate-50 border border-slate-100 rounded-2xl w-full h-16 pl-14 pr-6 outline-none focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all font-medium text-lg shadow-inner"
@@ -82,7 +83,7 @@ const StoresPage = () => {
         </div>
         <button className="h-16 px-10 rounded-2xl border-2 border-slate-100 text-primary font-black uppercase tracking-widest text-[10px] hover:bg-slate-50 hover:border-primary/20 transition-all flex items-center justify-center gap-3 active:scale-95">
           <PiFunnelDuotone size={20} />
-          Filters
+          {t('stores.filters')}
         </button>
       </div>
 
@@ -92,7 +93,7 @@ const StoresPage = () => {
           onClick={() => setSelectedCategory('All')}
           className={`cem-pill whitespace-nowrap ${selectedCategory === 'All' ? 'active' : ''}`}
         >
-          All Stores
+          {t('stores.allStores')}
         </button>
         {CATEGORIES.map(cat => (
           <button
@@ -167,7 +168,7 @@ const StoresPage = () => {
                         to={`/stores/${store.id}`} 
                         className="cem-btn-outline w-full flex items-center justify-center gap-2 text-xs italic"
                       >
-                        View Store <PiArrowRightBold size={16} />
+                        {t('stores.viewStore')} <PiArrowRightBold size={16} />
                       </Link>
                     </div>
                   </div>
@@ -189,14 +190,14 @@ const StoresPage = () => {
             <PiMagnifyingGlassDuotone size={40} />
           </div>
           <div>
-            <h3 className="font-display text-2xl text-body-text mb-2 tracking-tight">No stores found</h3>
-            <p className="text-muted-text max-w-sm mx-auto font-medium">We couldn't find any results matching your search criteria. Try a different category or store name.</p>
+            <h3 className="font-display text-2xl text-body-text mb-2 tracking-tight">{t('stores.noStoresFound')}</h3>
+            <p className="text-muted-text max-w-sm mx-auto font-medium">{t('stores.noStoresSubtitle')}</p>
           </div>
           <button 
             onClick={() => {setSearch(''); setSelectedCategory('All');}}
             className="cem-btn-outline px-10 italic"
           >
-            Clear All Filters
+            {t('stores.clearAllFilters')}
           </button>
         </motion.div>
       )}

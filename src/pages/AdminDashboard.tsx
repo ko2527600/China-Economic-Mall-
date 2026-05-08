@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   BarChart3, 
   Store as StoreIcon, 
@@ -119,6 +120,7 @@ const ImageUploadField = ({
 };
 
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const [stores, setStores] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [config, setConfig] = useState<any>(null);
@@ -387,12 +389,12 @@ const AdminDashboard = () => {
 
         <nav className="flex flex-col gap-2">
           {[
-            { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
-            { id: 'stores', icon: StoreIcon, label: 'Manage Stores' },
-            { id: 'products', icon: ShoppingBag, label: 'Manage Products' },
-            { id: 'promotions', icon: Tag, label: 'Manage Deals' },
-            { id: 'events', icon: Sparkles, label: 'Manage Events' },
-            { id: 'settings', icon: Settings, label: 'Site Settings' },
+            { id: 'overview', icon: LayoutDashboard, label: t('admin.overview') },
+            { id: 'stores', icon: StoreIcon, label: t('admin.manageStores') },
+            { id: 'products', icon: ShoppingBag, label: t('admin.manageProducts') },
+            { id: 'promotions', icon: Tag, label: t('admin.managePromotions') },
+            { id: 'events', icon: Sparkles, label: t('admin.manageEvents') },
+            { id: 'settings', icon: Settings, label: t('admin.siteSettings') },
           ].map((item) => (
             <button
               key={item.id}
@@ -410,14 +412,14 @@ const AdminDashboard = () => {
         </nav>
 
         <div className="mt-auto pt-8 border-t border-white/10">
-          <p className="text-[10px] font-black uppercase text-white/30 tracking-[0.3em]">Quick Summary</p>
+          <p className="text-[10px] font-black uppercase text-white/30 tracking-[0.3em]">{t('admin.overview')}</p>
           <div className="mt-4 flex flex-col gap-4">
             <div className="bg-white/5 p-4 rounded-2xl">
-              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest">Total Stores</p>
+              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest">{t('admin.totalStores')}</p>
               <p className="text-2xl font-black">{stores.length}</p>
             </div>
             <div className="bg-white/5 p-4 rounded-2xl">
-              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest">Total Products</p>
+              <p className="text-white/50 text-[10px] font-black uppercase tracking-widest">{t('admin.totalProducts')}</p>
               <p className="text-2xl font-black">{products.length}</p>
             </div>
           </div>
@@ -429,14 +431,14 @@ const AdminDashboard = () => {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
             <h2 className="text-3xl font-black uppercase tracking-tighter italic">
-               {activeTab === 'overview' && "Dashboard Overview"}
-               {activeTab === 'stores' && "Store Inventory"}
-               {activeTab === 'products' && "Product Catalog"}
-               {activeTab === 'promotions' && "Store Promotions"}
-               {activeTab === 'events' && "Mall Events"}
-               {activeTab === 'settings' && "Site Configuration"}
+               {activeTab === 'overview' && t('admin.overview')}
+               {activeTab === 'stores' && t('admin.manageStores')}
+               {activeTab === 'products' && t('admin.manageProducts')}
+               {activeTab === 'promotions' && t('admin.managePromotions')}
+               {activeTab === 'events' && t('admin.manageEvents')}
+               {activeTab === 'settings' && t('admin.siteSettings')}
             </h2>
-            <p className="text-slate-400 text-sm font-medium">Manage and monitor mall operations in real-time.</p>
+            <p className="text-slate-400 text-sm font-medium">{t('nav.products') === '商品' ? '实时管理和监控商城运营。' : 'Manage and monitor mall operations in real-time.'}</p>
           </div>
           
           <div className="flex gap-4">

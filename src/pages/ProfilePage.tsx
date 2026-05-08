@@ -1,23 +1,24 @@
-
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { User, Settings, Heart, Bell, LogOut, ChevronRight, MapPin, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { STORES } from '../data/mockData';
 
 const ProfilePage = () => {
+  const { t, i18n } = useTranslation();
   const favoriteStores = STORES.slice(0, 2);
 
   const menuItems = [
-    { icon: Bell, label: 'Notifications', value: 'On' },
-    { icon: Globe, label: 'Language', value: 'English' },
-    { icon: Settings, label: 'Account Settings', value: null },
+    { icon: Bell, label: t('nav.products') === '商品' ? '通知' : 'Notifications', value: t('nav.products') === '商品' ? '已开启' : 'On' },
+    { icon: Globe, label: t('profile.language'), value: i18n.language === 'zh' ? '简体中文' : 'English' },
+    { icon: Settings, label: t('nav.products') === '商品' ? '账户设置' : 'Account Settings', value: null },
   ];
 
   return (
     <div className="flex flex-col gap-8 py-10 px-6 max-w-7xl mx-auto w-full pb-24">
       <div>
-         <h1 className="text-sm font-black uppercase text-slate-400 tracking-widest">User Dashboard</h1>
-         <h2 className="text-4xl font-black uppercase tracking-tight">Your <span className="text-accent underline decoration-yellow-400 decoration-4 underline-offset-4">Profile</span></h2>
+         <h1 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '用户面板' : 'User Dashboard'}</h1>
+         <h2 className="text-4xl font-black uppercase tracking-tight">{t('profile.title')}</h2>
       </div>
 
       {/* Header Profile Info */}
@@ -33,7 +34,7 @@ const ProfilePage = () => {
          <div className="text-center md:text-left flex-1">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
                <h2 className="text-3xl font-black uppercase tracking-tighter">Kwame Mensah</h2>
-               <span className="bg-accent/10 text-accent text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">Gold Member</span>
+               <span className="bg-accent/10 text-accent text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">{t('loyalty.gold')} {t('nav.products') === '商品' ? '会员' : 'Member'}</span>
             </div>
             <p className="text-slate-400 font-bold uppercase text-xs tracking-widest flex items-center justify-center md:justify-start gap-2 mb-6">
                <MapPin size={14} className="text-accent" /> Darkuman, Accra
@@ -41,11 +42,11 @@ const ProfilePage = () => {
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                <div className="bg-slate-50 px-6 py-4 rounded-2xl text-center border border-slate-100 min-w-[120px] shadow-inner">
                   <p className="text-2xl font-black text-primary tracking-tighter leading-none mb-1">1,240</p>
-                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Rewards Pts</p>
+                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '奖励积分' : 'Rewards Pts'}</p>
                </div>
                <div className="bg-slate-50 px-6 py-4 rounded-2xl text-center border border-slate-100 min-w-[120px] shadow-inner">
                   <p className="text-2xl font-black text-primary tracking-tighter leading-none mb-1">4</p>
-                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Favorites</p>
+                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '收藏' : 'Favorites'}</p>
                </div>
             </div>
          </div>
@@ -56,7 +57,7 @@ const ProfilePage = () => {
          <div className="space-y-6">
             <h3 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
                <Heart size={18} className="text-accent fill-accent" />
-               Saved Mall Spots
+               {t('nav.products') === '商品' ? '收藏的店铺' : 'Saved Mall Spots'}
             </h3>
             <div className="grid grid-cols-1 gap-4">
                {favoriteStores.map(store => (
@@ -72,7 +73,7 @@ const ProfilePage = () => {
                   </Link>
                ))}
                <Link to="/stores" className="text-center p-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-accent transition-colors">
-                  Explore More Stores
+                  {t('home.viewAllStores')}
                </Link>
             </div>
          </div>
@@ -81,7 +82,7 @@ const ProfilePage = () => {
          <div className="space-y-6">
             <h3 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
                <Settings size={18} className="text-accent" />
-               System Preferences
+               {t('nav.products') === '商品' ? '系统设置' : 'System Preferences'}
             </h3>
             <div className="bg-white rounded-[2.5rem] border-2 border-slate-50 divide-y divide-slate-50 overflow-hidden shadow-xl">
                {menuItems.map((item, i) => (
@@ -102,7 +103,7 @@ const ProfilePage = () => {
                   <div className="p-3 bg-red-50 rounded-2xl text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all shadow-inner">
                      <LogOut size={22} />
                   </div>
-                  <span className="font-black text-sm uppercase tracking-tight text-red-600">Sign Out of Account</span>
+                  <span className="font-black text-sm uppercase tracking-tight text-red-600">{t('nav.products') === '商品' ? '退出登录' : 'Sign Out of Account'}</span>
                </button>
             </div>
          </div>

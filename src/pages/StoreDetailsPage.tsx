@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   ChevronLeft, Heart, Share2, MapPin, Clock, Phone, 
   Star, MessageSquare, ThumbsUp, MoreHorizontal, ShoppingBag,
@@ -33,6 +33,7 @@ const isStoreOpen = (hoursString: string) => {
 };
 
 const StoreDetailsPage = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [store, setStore] = useState<any>(null);
@@ -73,10 +74,10 @@ const StoreDetailsPage = () => {
   if (!store) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh] px-6 text-center">
-        <h2 className="text-2xl font-bold mb-2">Store not found</h2>
-        <p className="text-gray-500 mb-8">The store you are looking for doesn't exist or has moved.</p>
+        <h2 className="text-2xl font-bold mb-2">{t('storeDetails.storeNotFound')}</h2>
+        <p className="text-gray-500 mb-8">{t('storeDetails.storeNotFoundDesc')}</p>
         <button onClick={() => navigate('/stores')} className="bg-primary text-white px-8 py-3 rounded-2xl font-bold">
-          Back to Directory
+          {t('storeDetails.backToDirectory')}
         </button>
       </div>
     );
@@ -122,10 +123,10 @@ const StoreDetailsPage = () => {
               <div className="flex-1 pb-2">
                 <div className="flex flex-wrap items-center gap-3 mb-3">
                   <span className="badge-promo shadow-sm">
-                    {store.category} Store
+                    {store.category} {t('storeDetails.storeCategory')}
                   </span>
                   <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg border ${isOpen ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border-rose-500/30'}`}>
-                    {isOpen ? '● Open Now' : '○ Currently Closed'}
+                    {isOpen ? t('storeDetails.openNow') : t('storeDetails.closed')}
                   </span>
                 </div>
                 <h1 className="text-3xl md:text-5xl font-black text-white leading-none uppercase tracking-tighter shadow-text">{store.name}</h1>
@@ -138,7 +139,7 @@ const StoreDetailsPage = () => {
         {/* Main Content */}
         <div className="md:col-span-2 flex flex-col gap-10">
           <section>
-            <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest mb-4">Store Overview</h2>
+            <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest mb-4">{t('storeDetails.storeOverview')}</h2>
             <p className="text-slate-600 leading-relaxed text-lg font-medium italic border-l-4 border-yellow-400 pl-6">
               "{store.description}"
             </p>
@@ -149,9 +150,9 @@ const StoreDetailsPage = () => {
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
-                   <Camera size={14} className="text-accent" /> Store Gallery
+                   <Camera size={14} className="text-accent" /> {t('storeDetails.storeGallery')}
                 </h2>
-                <span className="text-[10px] font-black uppercase text-slate-300 tracking-widest">{store.gallery.length} PHOTOS</span>
+                <span className="text-[10px] font-black uppercase text-slate-300 tracking-widest">{store.gallery.length} {t('storeDetails.photos')}</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {store.gallery.map((img, i) => (
@@ -176,9 +177,9 @@ const StoreDetailsPage = () => {
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
-                 <ShoppingBag size={14} className="text-accent" /> Store Inventory
+                 <ShoppingBag size={14} className="text-accent" /> {t('storeDetails.storeInventory')}
               </h2>
-              <Link to="/products" className="text-accent text-[10px] font-black uppercase tracking-widest hover:underline">Mall Catalog</Link>
+              <Link to="/products" className="text-accent text-[10px] font-black uppercase tracking-widest hover:underline">{t('storeDetails.mallCatalog')}</Link>
             </div>
             {storeProducts.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
@@ -196,7 +197,7 @@ const StoreDetailsPage = () => {
               </div>
             ) : (
               <div className="bg-slate-50 p-8 rounded-3xl text-center border-2 border-dashed border-slate-200">
-                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Inventory update in progress...</p>
+                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('storeDetails.inventoryProgress')}</p>
               </div>
             )}
           </section>
@@ -207,12 +208,12 @@ const StoreDetailsPage = () => {
                   <Star size={24} strokeWidth={2.5} className="fill-accent" />
                   <span>{store.rating}</span>
                </div>
-               <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Average Rating</span>
+               <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">{t('storeDetails.averageRating')}</span>
             </div>
             <div className="bg-white border-2 border-slate-50 p-6 rounded-3xl shadow-sm hover:border-blue-600 hover:bg-blue-50 transition-all group">
                <div className="flex items-center gap-2 text-blue-600 font-black text-xl mb-2 group-hover:scale-110 transition-transform">
                   <ShieldCheck size={24} strokeWidth={2.5} />
-                  <span>Verified</span>
+                  <span>{t('storeDetails.verified')}</span>
                </div>
                <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">DARKUMAN BRANCH</span>
             </div>
@@ -221,14 +222,14 @@ const StoreDetailsPage = () => {
                   <ThumbsUp size={24} strokeWidth={2.5} />
                   <span>95%</span>
                </div>
-               <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Recommended</span>
+               <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">{t('storeDetails.recommended')}</span>
             </div>
           </section>
 
           {/* Location Map Placeholder */}
           <section>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">Location & Directions</h2>
+              <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('storeDetails.locationDirections')}</h2>
             </div>
             <div className="bg-slate-100 h-64 rounded-[2.5rem] relative overflow-hidden group border-4 border-white shadow-xl">
                <img 
@@ -249,7 +250,7 @@ const StoreDetailsPage = () => {
                </div>
             </div>
             <button className="mt-6 w-full bg-slate-900 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">
-               Open in Google Maps
+               {t('storeDetails.openInMaps')}
             </button>
           </section>
 
@@ -257,10 +258,10 @@ const StoreDetailsPage = () => {
           <section>
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
-                Customer Feedback
+                {t('storeDetails.customerFeedback')}
                 <span className="text-xs font-black text-accent bg-accent/10 px-2 py-0.5 rounded-full">{store.reviews.length}</span>
               </h2>
-              <button className="text-accent text-xs font-black uppercase tracking-widest hover:underline">Write Review</button>
+              <button className="text-accent text-xs font-black uppercase tracking-widest hover:underline">{t('storeDetails.writeReview')}</button>
             </div>
             
             <div className="flex flex-col gap-8">
@@ -287,8 +288,8 @@ const StoreDetailsPage = () => {
               )) : (
                 <div className="bg-slate-50 border-2 border-dashed border-slate-200 p-12 rounded-[2.5rem] text-center">
                    <MessageSquare className="mx-auto text-slate-200 mb-4" size={48} />
-                   <p className="font-black text-slate-800 uppercase tracking-tight text-xl">No reviews yet</p>
-                   <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-2">Be the first to share your experience!</p>
+                   <p className="font-black text-slate-800 uppercase tracking-tight text-xl">{t('storeDetails.noReviews')}</p>
+                   <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-2">{t('storeDetails.noReviewsSub')}</p>
                 </div>
               )}
             </div>
@@ -300,30 +301,30 @@ const StoreDetailsPage = () => {
           <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-8 sticky top-24">
             <div>
               <h3 className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
-                <Clock size={14} /> Opening Hours
+                <Clock size={14} /> {t('storeDetails.openingHours')}
               </h3>
               <div className="flex items-center justify-between mb-1">
                  <p className="font-black text-xl tracking-tight uppercase">{store.hours}</p>
                  <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-md ${isOpen ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
-                    {isOpen ? 'Open' : 'Closed'}
+                    {isOpen ? t('storeDetails.open') : t('storeDetails.closedLabel')}
                  </span>
               </div>
-              <p className="text-xs text-slate-400 font-bold uppercase mt-1">Open 7 days a week</p>
+              <p className="text-xs text-slate-400 font-bold uppercase mt-1">{t('storeDetails.open7Days')}</p>
             </div>
 
             <div>
               <h3 className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
-                <Phone size={14} /> Direct Line
+                <Phone size={14} /> {t('storeDetails.directLine')}
               </h3>
               <p className="font-black text-xl tracking-tight uppercase">{store.phone}</p>
             </div>
 
             <div className="space-y-3 pt-4 border-t border-slate-50">
               <button className="w-full bg-accent text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-accent/30 hover:scale-[1.03] transition-all active:scale-[0.97] italic">
-                Connect via WhatsApp
+                {t('storeDetails.connectWhatsApp')}
               </button>
               <button className="w-full bg-white border-2 border-slate-900 text-slate-900 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-900 hover:text-white transition-all">
-                Add to Favorites
+                {t('storeDetails.addToFavorites')}
               </button>
             </div>
           </div>
@@ -331,7 +332,7 @@ const StoreDetailsPage = () => {
           {/* Recommendations Filtered by Category */}
           {recommendations.length > 0 && (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg">Similar Stores</h3>
+              <h3 className="font-bold text-lg">{t('storeDetails.similarStores')}</h3>
               <div className="flex flex-col gap-3">
                 {recommendations.map(item => (
                   <Link key={item.id} to={`/stores/${item.id}`} className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-gray-100 hover:shadow-md transition-shadow group">
