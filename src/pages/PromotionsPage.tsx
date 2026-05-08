@@ -48,14 +48,14 @@ const PromotionsPage = () => {
       <div className="relative h-64 rounded-[2.5rem] overflow-hidden group shadow-2xl border-4 border-white">
          <img 
           src={config?.promoImage || "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=1000&fit=crop"} 
-          alt="Mega Sale" 
+          alt={t('promotions.megaSaleAlt')} 
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 brightness-75" 
         />
          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 to-transparent p-10 flex flex-col justify-center">
             <span className="bg-secondary text-primary text-[10px] font-black px-3 py-1 rounded-lg w-fit mb-4 uppercase tracking-[0.2em] shadow-lg">{config?.promoSubtitle || t('promotions.allPromotions')}</span>
             <h2 className="text-white text-5xl font-black mb-2 uppercase tracking-tighter shadow-text">{config?.promoTitle || t('promotions.title')}</h2>
-            <p className="text-secondary text-lg font-black italic uppercase tracking-widest">{t('nav.products') === '商品' ? '全场低至' : 'Up to'} {config?.promoDiscount || "60%"} {t('nav.products') === '商品' ? '折扣' : 'OFF ALL ITEMS'}</p>
-            <p className="text-white/60 text-sm mt-4 font-medium max-w-xs">{t('nav.products') === '商品' ? '全楼层店铺参与。查看标签了解折扣资格。' : 'Participating stores across all levels. Check labels for discount eligibility.'}</p>
+            <p className="text-secondary text-lg font-black italic uppercase tracking-widest">{t('promotions.upTo')} {config?.promoDiscount || "60%"} {t('promotions.offAllItems')}</p>
+            <p className="text-white/60 text-sm mt-4 font-medium max-w-xs">{t('promotions.participatingStores')}</p>
          </div>
       </div>
 
@@ -63,7 +63,7 @@ const PromotionsPage = () => {
       <section>
         <div className="flex items-center gap-3 mb-8">
            <Tag className="text-accent" size={24} />
-           <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '店铺专属优惠' : 'Store Specific Deals'}</h2>
+           <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('promotions.storeDeals')}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -85,7 +85,7 @@ const PromotionsPage = () => {
                   </div>
                   <div className="p-6">
                      <div className="flex items-center gap-2 mb-3">
-                        <span className="bg-accent/10 text-accent text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest inline-block">{t('nav.products') === '商品' ? '限时抢购' : 'Flash Deal'}</span>
+                        <span className="bg-accent/10 text-accent text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest inline-block">{t('promotions.flashDeal')}</span>
                      </div>
                      <h3 className="font-black text-xl mb-2 uppercase tracking-tight group-hover:text-accent transition-colors">{promo.title}</h3>
                      <p className="text-slate-500 text-sm mb-6 leading-relaxed font-medium">{promo.description}</p>
@@ -95,7 +95,7 @@ const PromotionsPage = () => {
                           <div className="flex items-center gap-3">
                              <img src={store.logo} alt="" className="w-10 h-10 rounded-xl object-cover border border-slate-100" />
                              <div>
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-0.5">{t('nav.products') === '商品' ? '提供方' : 'Offered By'}</p>
+                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-0.5">{t('promotions.offerBy')}</p>
                                 <span className="text-xs font-black uppercase tracking-tight text-slate-700">{store.name}</span>
                              </div>
                           </div>
@@ -115,7 +115,7 @@ const PromotionsPage = () => {
       <section>
         <div className="flex items-center gap-3 mb-8">
            <Sparkles className="text-accent" size={24} />
-           <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '即将举办的商城活动' : 'Upcoming Mall Events'}</h2>
+           <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('promotions.upcomingEvents')}</h2>
         </div>
 
         <div className="flex flex-col gap-6">
@@ -134,7 +134,7 @@ const PromotionsPage = () => {
                    <h3 className="font-black text-2xl mb-2 uppercase tracking-tight">{event.title}</h3>
                    <p className="text-sm text-slate-500 line-clamp-2 font-medium leading-relaxed">{event.description}</p>
                    <button className="mt-6 bg-slate-900 text-white px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest w-fit hover:bg-accent transition-all shadow-lg italic">
-                      {t('nav.products') === '商品' ? '提醒我' : 'Remind Me'}
+                      {t('promotions.remindMe')}
                    </button>
                 </div>
              </div>
@@ -146,11 +146,11 @@ const PromotionsPage = () => {
       <section className="bg-primary text-white rounded-[2.5rem] p-10 mt-6 overflow-hidden relative shadow-2xl border-b-8 border-secondary">
          <div className="relative z-10 sm:flex items-center justify-between gap-12">
             <div className="max-w-md">
-               <h2 className="text-3xl font-black mb-2 uppercase italic tracking-tighter">{t('nav.products') === '商品' ? '保持联系' : 'Stay Connected'}</h2>
-               <p className="text-white/60 text-sm font-medium">{t('nav.products') === '商品' ? '第一时间了解限时抢购和重大活动。我们承诺只将最优惠的信息发送到您的设备。' : 'Be the first to know about flash sales and major events. We promise only the best deals straight to your device.'}</p>
+               <h2 className="text-3xl font-black mb-2 uppercase italic tracking-tighter">{t('promotions.stayConnected')}</h2>
+               <p className="text-white/60 text-sm font-medium">{t('promotions.stayConnectedDesc')}</p>
             </div>
             <button className="w-full sm:w-auto bg-accent text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-accent/40 hover:scale-105 transition-all mt-8 sm:mt-0 italic">
-               {t('nav.products') === '商品' ? '开启实时提醒' : 'Enable Real-Time Alerts'}
+               {t('promotions.enableAlerts')}
             </button>
          </div>
          <Bell className="absolute -left-12 -bottom-12 text-white/5 -rotate-12" size={200} />

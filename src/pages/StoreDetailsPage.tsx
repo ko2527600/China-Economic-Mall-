@@ -215,7 +215,7 @@ const StoreDetailsPage = () => {
                   <ShieldCheck size={24} strokeWidth={2.5} />
                   <span>{t('storeDetails.verified')}</span>
                </div>
-               <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">DARKUMAN BRANCH</span>
+               <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">{t('storeDetails.darkumanBranch')}</span>
             </div>
             <div className="bg-white border-2 border-slate-50 p-6 rounded-3xl shadow-sm hover:border-green-600 hover:bg-green-50 transition-all group">
                <div className="flex items-center gap-2 text-green-600 font-black text-xl mb-2 group-hover:scale-110 transition-transform">
@@ -244,7 +244,7 @@ const StoreDetailsPage = () => {
                      </div>
                      <div>
                         <p className="font-black text-lg leading-tight uppercase tracking-tight">{store.location}</p>
-                        <p className="text-[10px] text-white/60 font-black uppercase tracking-widest">China Economic Mall</p>
+                        <p className="text-[10px] text-white/60 font-black uppercase tracking-widest">{t('storeDetails.mapMallName')}</p>
                      </div>
                   </div>
                </div>

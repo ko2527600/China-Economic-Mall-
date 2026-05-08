@@ -9,15 +9,15 @@ const ProfilePage = () => {
   const favoriteStores = STORES.slice(0, 2);
 
   const menuItems = [
-    { icon: Bell, label: t('nav.products') === '商品' ? '通知' : 'Notifications', value: t('nav.products') === '商品' ? '已开启' : 'On' },
+    { icon: Bell, label: t('profile.menuItems.notifications'), value: t('profile.menuItems.notificationsOn') },
     { icon: Globe, label: t('profile.language'), value: i18n.language === 'zh' ? '简体中文' : 'English' },
-    { icon: Settings, label: t('nav.products') === '商品' ? '账户设置' : 'Account Settings', value: null },
+    { icon: Settings, label: t('profile.menuItems.accountSettings'), value: null },
   ];
 
   return (
     <div className="flex flex-col gap-8 py-10 px-6 max-w-7xl mx-auto w-full pb-24">
       <div>
-         <h1 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '用户面板' : 'User Dashboard'}</h1>
+         <h1 className="text-sm font-black uppercase text-slate-400 tracking-widest">{t('profile.userDashboard')}</h1>
          <h2 className="text-4xl font-black uppercase tracking-tight">{t('profile.title')}</h2>
       </div>
 
@@ -34,7 +34,7 @@ const ProfilePage = () => {
          <div className="text-center md:text-left flex-1">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
                <h2 className="text-3xl font-black uppercase tracking-tighter">Kwame Mensah</h2>
-               <span className="bg-accent/10 text-accent text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">{t('loyalty.gold')} {t('nav.products') === '商品' ? '会员' : 'Member'}</span>
+               <span className="bg-accent/10 text-accent text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">{t('loyalty.gold')} {t('profile.member')}</span>
             </div>
             <p className="text-slate-400 font-bold uppercase text-xs tracking-widest flex items-center justify-center md:justify-start gap-2 mb-6">
                <MapPin size={14} className="text-accent" /> Darkuman, Accra
@@ -42,11 +42,11 @@ const ProfilePage = () => {
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                <div className="bg-slate-50 px-6 py-4 rounded-2xl text-center border border-slate-100 min-w-[120px] shadow-inner">
                   <p className="text-2xl font-black text-primary tracking-tighter leading-none mb-1">1,240</p>
-                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '奖励积分' : 'Rewards Pts'}</p>
+                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('profile.rewardsPts')}</p>
                </div>
                <div className="bg-slate-50 px-6 py-4 rounded-2xl text-center border border-slate-100 min-w-[120px] shadow-inner">
                   <p className="text-2xl font-black text-primary tracking-tighter leading-none mb-1">4</p>
-                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('nav.products') === '商品' ? '收藏' : 'Favorites'}</p>
+                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('profile.favorites')}</p>
                </div>
             </div>
          </div>
@@ -57,7 +57,7 @@ const ProfilePage = () => {
          <div className="space-y-6">
             <h3 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
                <Heart size={18} className="text-accent fill-accent" />
-               {t('nav.products') === '商品' ? '收藏的店铺' : 'Saved Mall Spots'}
+               {t('profile.savedStores')}
             </h3>
             <div className="grid grid-cols-1 gap-4">
                {favoriteStores.map(store => (
@@ -82,7 +82,7 @@ const ProfilePage = () => {
          <div className="space-y-6">
             <h3 className="text-sm font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
                <Settings size={18} className="text-accent" />
-               {t('nav.products') === '商品' ? '系统设置' : 'System Preferences'}
+               {t('profile.systemPrefs')}
             </h3>
             <div className="bg-white rounded-[2.5rem] border-2 border-slate-50 divide-y divide-slate-50 overflow-hidden shadow-xl">
                {menuItems.map((item, i) => (
@@ -103,15 +103,15 @@ const ProfilePage = () => {
                   <div className="p-3 bg-red-50 rounded-2xl text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all shadow-inner">
                      <LogOut size={22} />
                   </div>
-                  <span className="font-black text-sm uppercase tracking-tight text-red-600">{t('nav.products') === '商品' ? '退出登录' : 'Sign Out of Account'}</span>
+                  <span className="font-black text-sm uppercase tracking-tight text-red-600">{t('profile.signOut')}</span>
                </button>
             </div>
          </div>
       </div>
 
       <div className="text-center mt-12 py-8 border-t border-slate-50">
-         <p className="text-[10px] text-slate-300 font-black uppercase tracking-[0.4em] mb-2">China Economic Mall Darkuman • Official PWA</p>
-         <p className="text-[10px] text-slate-200 font-black">VERSION 2.4.0_GOLD_RELEASE</p>
+         <p className="text-[10px] text-slate-300 font-black uppercase tracking-[0.4em] mb-2">{t('profile.footerMall')}</p>
+         <p className="text-[10px] text-slate-200 font-black">{t('profile.footerVersion')}</p>
       </div>
     </div>
   );

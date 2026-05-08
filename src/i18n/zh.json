@@ -6,7 +6,11 @@
     "promos": "促销",
     "loyalty": "会员",
     "searchPlaceholder": "搜索商城...",
-    "searchPlaceholderMobile": "搜索店铺、商品..."
+    "searchPlaceholderMobile": "搜索店铺、商品...",
+    "switchToChinese": "Switch to Chinese",
+    "switchToEnglish": "切换回英文",
+    "zh": "中文",
+    "en": "EN"
   },
   "home": {
     "sectionLabel": "探索发现",
@@ -16,7 +20,8 @@
     "stats": {
       "stores": "店铺",
       "products": "商品",
-      "hotDeals": "热卖"
+      "hotDeals": "热卖",
+      "daily": "每日"
     },
     "exploreDepartments": "探索品类",
     "mallDirectory": "商城指南",
@@ -37,7 +42,26 @@
     "earnPoints": "每次购物即可累积积分，抢先获取重大商城活动、季节性促销和独家贸易折扣的优先访问权。",
     "startEarningPoints": "开始累积积分",
     "currentMemberPts": "当前会员积分",
-    "toGoldStatus": "至金牌等级"
+    "toGoldStatus": "至金牌等级",
+    "heroTitle": "中国\n经济\n商城",
+    "heroAlt": "中国经济商城",
+    "locationBadge": "杜库曼商圈",
+    "promoSave": "立省",
+    "categories": {
+      "electronics": "电子产品",
+      "fashion": "时尚服饰",
+      "groceries": "食品杂货",
+      "home": "家居用品",
+      "kitchen": "厨房用具",
+      "furniture": "家具"
+    },
+    "videos": {
+      "grandTour": "商城全景",
+      "luxuryAisles": "豪华走廊",
+      "modernFacade": "现代外观",
+      "eliteStores": "精英店铺",
+      "shoppingVibes": "购物氛围"
+    }
   },
   "stores": {
     "sectionLabel": "浏览发现",
@@ -49,7 +73,18 @@
     "viewStore": "查看店铺",
     "noStoresFound": "未找到店铺",
     "noStoresSubtitle": "我们找不到符合您搜索条件的结果。请尝试其他分类或店铺名称。",
-    "clearAllFilters": "清除所有筛选条件"
+    "clearAllFilters": "清除所有筛选条件",
+    "categories": {
+      "all": "全部",
+      "electronics": "电子产品",
+      "fashion": "时尚服饰",
+      "groceries": "食品杂货",
+      "household": "日用百货",
+      "kitchenware": "厨房用具",
+      "furniture": "家具",
+      "appliances": "家用电器",
+      "bagsLuggage": "箱包行李"
+    }
   },
   "storeDetails": {
     "storeCategory": "店铺",
@@ -63,6 +98,7 @@
     "inventoryProgress": "库存更新中...",
     "averageRating": "平均评分",
     "verified": "已认证",
+    "darkumanBranch": "杜库曼分店",
     "recommended": "推荐",
     "locationDirections": "位置和路线",
     "openInMaps": "在Google地图中打开",
@@ -81,7 +117,8 @@
     "storeNotFound": "店铺不存在",
     "storeNotFoundDesc": "您查找的店铺不存在或已搬迁。",
     "backToDirectory": "返回目录",
-    "back": "返回"
+    "back": "返回",
+    "mapMallName": "中国经济商城"
   },
   "products": {
     "sectionLabel": "浏览发现",
@@ -94,7 +131,17 @@
     "noProducts": "未找到商品",
     "noProductsSub": "我们找不到符合您搜索条件的商品。请尝试调整筛选条件。",
     "clearAll": "清除全部",
-    "loadMore": "加载更多"
+    "loadMore": "加载更多",
+    "categories": {
+      "all": "全部",
+      "household": "日用百货",
+      "electronics": "电子产品",
+      "bagsLuggage": "箱包行李",
+      "furniture": "家具",
+      "groceries": "食品杂货",
+      "kitchenware": "厨房用具",
+      "fashion": "时尚服饰"
+    }
   },
   "promotions": {
     "sectionLabel": "优惠福利",
@@ -106,7 +153,19 @@
     "expires": "到期",
     "noPromotions": "暂无促销",
     "noPromotionsSub": "即将推出精彩折扣和优惠，敬请期待。",
-    "viewDeal": "查看优惠"
+    "viewDeal": "查看优惠",
+    "upTo": "全场低至",
+    "offAllItems": "折扣",
+    "participatingStores": "全楼层店铺参与。查看标签了解折扣资格。",
+    "storeDeals": "店铺专属优惠",
+    "flashDeal": "限时抢购",
+    "offerBy": "提供方",
+    "upcomingEvents": "即将举办的商城活动",
+    "remindMe": "提醒我",
+    "stayConnected": "保持联系",
+    "stayConnectedDesc": "第一时间了解限时抢购和重大活动。我们承诺只将最优惠的信息发送到您的设备。",
+    "enableAlerts": "开启实时提醒",
+    "megaSaleAlt": "大促"
   },
   "loyalty": {
     "sectionLabel": "积分奖励",
@@ -126,7 +185,25 @@
     "step2Desc": "通过累积积分达到铜牌、银牌或金牌等级。",
     "step3Title": "解锁奖励",
     "step3Desc": "使用积分兑换折扣、独家优惠和VIP特权。",
-    "joinNow": "立即加入"
+    "joinNow": "立即加入",
+    "verifiedMember": "认证会员",
+    "tier": "等级",
+    "cumulativeBalance": "累计奖励余额",
+    "progressToDiamond": "钻石等级进度",
+    "availableTiers": "可用等级",
+    "levelAccess": "等级权限",
+    "pointsBracket": "积分区间",
+    "activeTier": "当前等级",
+    "transactionLogs": "交易记录",
+    "auditPoints": "查看积分历史",
+    "benefits": {
+      "earlyAccess": "抢先体验",
+      "earlyAccessDesc": "比其他人提前24小时获知促销信息。",
+      "birthdayReward": "生日奖励",
+      "birthdayRewardDesc": "生日当天可获得专属折扣券。",
+      "warrantyPlus": "延保服务",
+      "warrantyPlusDesc": "电子产品额外延长6个月保修。"
+    }
   },
   "profile": {
     "sectionLabel": "您的账户",
@@ -137,7 +214,20 @@
     "favorites": "收藏夹",
     "orderHistory": "订单记录",
     "logout": "退出登录",
-    "language": "语言"
+    "language": "语言",
+    "userDashboard": "用户面板",
+    "member": "会员",
+    "rewardsPts": "奖励积分",
+    "savedStores": "收藏的店铺",
+    "systemPrefs": "系统设置",
+    "signOut": "退出登录",
+    "footerMall": "中国经济商城杜库曼 • 官方PWA",
+    "footerVersion": "版本 2.4.0_金牌发布",
+    "menuItems": {
+      "notifications": "通知",
+      "notificationsOn": "已开启",
+      "accountSettings": "账户设置"
+    }
   },
   "admin": {
     "title": "管理面板",
@@ -165,12 +255,112 @@
     "actions": "操作",
     "upload": "上传",
     "confirmDelete": "确定要删除吗？",
-    "noResults": "暂无结果"
+    "noResults": "暂无结果",
+    "adminConsole": "管理控制台",
+    "economicMall": "经济商城",
+    "manageDesc": "实时管理和监控商城运营。",
+    "seedData": "导入演示数据",
+    "clearAllData": "清除所有数据",
+    "newStore": "新增店铺",
+    "newProduct": "新增商品",
+    "newDeal": "新增优惠",
+    "newEvent": "新增活动",
+    "activeStores": "活跃店铺",
+    "activeProducts": "活跃商品",
+    "systemStatus": "系统状态",
+    "connected": "已连接",
+    "dbInfo": "数据库：Prisma/PostgreSQL",
+    "storageInfo": "存储：Cloudinary 持久化",
+    "featured": "精选",
+    "standard": "普通",
+    "modal": {
+      "edit": "编辑",
+      "createNew": "创建新",
+      "store": "店铺",
+      "product": "商品",
+      "promotion": "促销",
+      "event": "活动",
+      "fillDetails": "请填写以下详细信息",
+      "saveChanges": "保存更改"
+    },
+    "form": {
+      "heroSection": "首页横幅",
+      "heroTitle": "横幅标题",
+      "heroSubtitle": "横幅副标题",
+      "heroDescription": "横幅描述",
+      "heroVideo": "横幅背景视频",
+      "promoBanner": "促销横幅",
+      "promoTitle": "促销标题",
+      "promoSubtitle": "促销副标题",
+      "promoDiscount": "促销折扣（如 40%）",
+      "promoImage": "促销横幅图片",
+      "loyaltyProgram": "会员计划",
+      "loyaltyTitle": "会员标题",
+      "loyaltyDescription": "会员描述",
+      "contactInfo": "联系信息",
+      "phone": "电话号码",
+      "hours": "营业时间",
+      "address": "地址",
+      "saveSettings": "保存网站设置"
+    },
+    "storeForm": {
+      "name": "店铺名称",
+      "category": "分类",
+      "description": "描述",
+      "logo": "店铺标志",
+      "mainImage": "店铺主图",
+      "location": "位置",
+      "locationPlaceholder": "如：一楼 12号铺",
+      "phone": "电话",
+      "gallery": "店铺相册（多张）",
+      "hours": "营业时间",
+      "hoursPlaceholder": "8:00 AM - 10:00 PM",
+      "featured": "在首页展示此店铺",
+      "categories": {
+        "electronics": "电子产品",
+        "fashion": "时尚服饰",
+        "household": "日用百货",
+        "groceries": "食品杂货",
+        "furniture": "家具"
+      }
+    },
+    "productForm": {
+      "name": "商品名称",
+      "price": "价格（如 4,500）",
+      "store": "店铺",
+      "category": "分类",
+      "images": "商品图片（选择多张可批量上传）",
+      "description": "描述",
+      "categories": {
+        "electronics": "电子产品",
+        "fashion": "时尚服饰",
+        "household": "日用百货",
+        "groceries": "食品杂货"
+      }
+    },
+    "promotionForm": {
+      "title": "促销标题",
+      "store": "目标店铺",
+      "expirationDate": "到期日期",
+      "image": "优惠图片",
+      "description": "描述"
+    },
+    "eventForm": {
+      "title": "活动标题",
+      "date": "活动日期",
+      "location": "地点",
+      "locationPlaceholder": "如：主中庭",
+      "banner": "活动横幅",
+      "description": "描述"
+    }
   },
   "common": {
     "loading": "加载中...",
     "error": "错误",
     "retry": "重试",
-    "close": "关闭"
+    "close": "关闭",
+    "preview": "预览",
+    "map": "地图",
+    "fullscreen": "全屏"
   }
 }

@@ -6,7 +6,11 @@
     "promos": "Promos",
     "loyalty": "Loyalty",
     "searchPlaceholder": "Search mall...",
-    "searchPlaceholderMobile": "Search stores, products..."
+    "searchPlaceholderMobile": "Search stores, products...",
+    "switchToChinese": "Switch to Chinese",
+    "switchToEnglish": "Switch back to English",
+    "zh": "中文",
+    "en": "EN"
   },
   "home": {
     "sectionLabel": "Browse & Discover",
@@ -16,7 +20,8 @@
     "stats": {
       "stores": "Stores",
       "products": "Products",
-      "hotDeals": "Hot Deals"
+      "hotDeals": "Hot Deals",
+      "daily": "Daily"
     },
     "exploreDepartments": "Explore Departments",
     "mallDirectory": "Mall Directory",
@@ -37,7 +42,26 @@
     "earnPoints": "Earn points on every purchase and get early access to major mall events, seasonal sales, and exclusive trade discounts.",
     "startEarningPoints": "Start Earning Points",
     "currentMemberPts": "Current Member Pts",
-    "toGoldStatus": "to Gold Status"
+    "toGoldStatus": "to Gold Status",
+    "heroTitle": "China\nEconomic\nMall",
+    "heroAlt": "China Economics Mall",
+    "locationBadge": "Darkuman circle",
+    "promoSave": "SAVE",
+    "categories": {
+      "electronics": "Electronics",
+      "fashion": "Fashion",
+      "groceries": "Groceries",
+      "home": "Home",
+      "kitchen": "Kitchen",
+      "furniture": "Furniture"
+    },
+    "videos": {
+      "grandTour": "Grand Mall Tour",
+      "luxuryAisles": "Luxury Aisles",
+      "modernFacade": "Modern Facade",
+      "eliteStores": "Elite Stores",
+      "shoppingVibes": "Shopping Vibes"
+    }
   },
   "stores": {
     "sectionLabel": "Browse & Discover",
@@ -49,7 +73,18 @@
     "viewStore": "View Store",
     "noStoresFound": "No stores found",
     "noStoresSubtitle": "We couldn't find any results matching your search criteria. Try a different category or store name.",
-    "clearAllFilters": "Clear All Filters"
+    "clearAllFilters": "Clear All Filters",
+    "categories": {
+      "all": "All",
+      "electronics": "Electronics",
+      "fashion": "Fashion",
+      "groceries": "Groceries",
+      "household": "Household",
+      "kitchenware": "Kitchenware",
+      "furniture": "Furniture",
+      "appliances": "Appliances",
+      "bagsLuggage": "Bags & Luggage"
+    }
   },
   "storeDetails": {
     "storeCategory": "Store",
@@ -63,6 +98,7 @@
     "inventoryProgress": "Inventory update in progress...",
     "averageRating": "Average Rating",
     "verified": "Verified",
+    "darkumanBranch": "DARKUMAN BRANCH",
     "recommended": "Recommended",
     "locationDirections": "Location & Directions",
     "openInMaps": "Open in Google Maps",
@@ -81,7 +117,8 @@
     "storeNotFound": "Store not found",
     "storeNotFoundDesc": "The store you are looking for doesn't exist or has moved.",
     "backToDirectory": "Back to Directory",
-    "back": "Back"
+    "back": "Back",
+    "mapMallName": "China Economic Mall"
   },
   "products": {
     "sectionLabel": "Browse & Discover",
@@ -94,7 +131,17 @@
     "noProducts": "No products found",
     "noProductsSub": "We couldn't find any products matching your search. Try adjusting your filters.",
     "clearAll": "Clear All",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "categories": {
+      "all": "All",
+      "household": "Household",
+      "electronics": "Electronics",
+      "bagsLuggage": "Bags & Luggage",
+      "furniture": "Furniture",
+      "groceries": "Groceries",
+      "kitchenware": "Kitchenware",
+      "fashion": "Fashion"
+    }
   },
   "promotions": {
     "sectionLabel": "Deals & Offers",
@@ -106,7 +153,31 @@
     "expires": "Expires",
     "noPromotions": "No promotions right now",
     "noPromotionsSub": "Check back soon for exciting deals and offers from our stores.",
-    "viewDeal": "View Deal"
+    "viewDeal": "View Deal",
+    "upToOff": "OFF ALL ITEMS",
+    "participatingStores": "Participating stores across all levels. Check labels for discount eligibility.",
+    "storeDeals": "Store Specific Deals",
+    "flashDeal": "Flash Deal",
+    "off": "OFF",
+    "offAllItems": "OFF ALL ITEMS",
+    "offText": "off",
+    "upTo": "Up to",
+    "offText2": "OFF",
+    "offTextAll": "off all items",
+    "offTextAll2": "off",
+    "offAll": "off all items",
+    "offBadge": "off",
+    "offAllBadge": "off",
+    "offAllText": "off all items",
+    "upToText": "Up to",
+    "offAllText2": "OFF ALL ITEMS",
+    "offerBy": "Offered By",
+    "upcomingEvents": "Upcoming Mall Events",
+    "remindMe": "Remind Me",
+    "stayConnected": "Stay Connected",
+    "stayConnectedDesc": "Be the first to know about flash sales and major events. We promise only the best deals straight to your device.",
+    "enableAlerts": "Enable Real-Time Alerts",
+    "megaSaleAlt": "Mega Sale"
   },
   "loyalty": {
     "sectionLabel": "Earn & Enjoy",
@@ -126,7 +197,25 @@
     "step2Desc": "Reach Bronze, Silver, or Gold status by accumulating points.",
     "step3Title": "Unlock Rewards",
     "step3Desc": "Redeem points for discounts, exclusive offers, and VIP access.",
-    "joinNow": "Join Now"
+    "joinNow": "Join Now",
+    "verifiedMember": "Verified Member",
+    "tier": "TIER",
+    "cumulativeBalance": "Cumulative Rewards Balance",
+    "progressToDiamond": "Progress to Diamond",
+    "availableTiers": "Available Tiers",
+    "levelAccess": "Level Access",
+    "pointsBracket": "Points Bracket",
+    "activeTier": "ACTIVE TIER",
+    "transactionLogs": "Transaction Logs",
+    "auditPoints": "Audit your points history",
+    "benefits": {
+      "earlyAccess": "Early Access",
+      "earlyAccessDesc": "Get notified about sales 24h before everyone else.",
+      "birthdayReward": "Birthday Reward",
+      "birthdayRewardDesc": "Special discount voucher on your birthday.",
+      "warrantyPlus": "Warranty Plus",
+      "warrantyPlusDesc": "Extended 6-month warranty on electronics."
+    }
   },
   "profile": {
     "sectionLabel": "Your Account",
@@ -137,7 +226,20 @@
     "favorites": "Favorites",
     "orderHistory": "Order History",
     "logout": "Logout",
-    "language": "Language"
+    "language": "Language",
+    "userDashboard": "User Dashboard",
+    "member": "Member",
+    "rewardsPts": "Rewards Pts",
+    "savedStores": "Saved Mall Spots",
+    "systemPrefs": "System Preferences",
+    "signOut": "Sign Out of Account",
+    "footerMall": "China Economic Mall Darkuman • Official PWA",
+    "footerVersion": "VERSION 2.4.0_GOLD_RELEASE",
+    "menuItems": {
+      "notifications": "Notifications",
+      "notificationsOn": "On",
+      "accountSettings": "Account Settings"
+    }
   },
   "admin": {
     "title": "Admin Dashboard",
@@ -165,12 +267,112 @@
     "actions": "Actions",
     "upload": "Upload",
     "confirmDelete": "Are you sure you want to delete this?",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "adminConsole": "Admin Console",
+    "economicMall": "Economic Mall",
+    "manageDesc": "Manage and monitor mall operations in real-time.",
+    "seedData": "Seed Data",
+    "clearAllData": "Clear All Data",
+    "newStore": "New Store",
+    "newProduct": "New Product",
+    "newDeal": "New Deal",
+    "newEvent": "New Event",
+    "activeStores": "Active Stores",
+    "activeProducts": "Active Products",
+    "systemStatus": "System Status",
+    "connected": "Connected",
+    "dbInfo": "Database: Prisma/PostgreSQL",
+    "storageInfo": "Storage: Cloudinary Persistent",
+    "featured": "Featured",
+    "standard": "Standard",
+    "modal": {
+      "edit": "Edit",
+      "createNew": "Create New",
+      "store": "Store",
+      "product": "Product",
+      "promotion": "Promotion",
+      "event": "Event",
+      "fillDetails": "Fill in the details below",
+      "saveChanges": "Save Changes"
+    },
+    "form": {
+      "heroSection": "Hero Section",
+      "heroTitle": "Hero Title",
+      "heroSubtitle": "Hero Subtitle",
+      "heroDescription": "Hero Description",
+      "heroVideo": "Hero Background Video",
+      "promoBanner": "Promotion Banner",
+      "promoTitle": "Promo Title",
+      "promoSubtitle": "Promo Subtitle",
+      "promoDiscount": "Promo Discount (e.g. 40%)",
+      "promoImage": "Promotion Banner Image",
+      "loyaltyProgram": "Loyalty Program",
+      "loyaltyTitle": "Loyalty Title",
+      "loyaltyDescription": "Loyalty Description",
+      "contactInfo": "Contact & Info",
+      "phone": "Phone Number",
+      "hours": "Opening Hours",
+      "address": "Address",
+      "saveSettings": "Save Site Settings"
+    },
+    "storeForm": {
+      "name": "Store Name",
+      "category": "Category",
+      "description": "Description",
+      "logo": "Store Logo",
+      "mainImage": "Main Store Image",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Ground Floor, Shop 12",
+      "phone": "Phone",
+      "gallery": "Store Gallery (Multiple)",
+      "hours": "Operating Hours",
+      "hoursPlaceholder": "8:00 AM - 10:00 PM",
+      "featured": "Feature this store on home page",
+      "categories": {
+        "electronics": "Electronics",
+        "fashion": "Fashion",
+        "household": "Household",
+        "groceries": "Groceries",
+        "furniture": "Furniture"
+      }
+    },
+    "productForm": {
+      "name": "Product Name",
+      "price": "Price (e.g. 4,500)",
+      "store": "Store",
+      "category": "Category",
+      "images": "Product Images (Select multiple for bulk upload)",
+      "description": "Description",
+      "categories": {
+        "electronics": "Electronics",
+        "fashion": "Fashion",
+        "household": "Household",
+        "groceries": "Groceries"
+      }
+    },
+    "promotionForm": {
+      "title": "Promotion Title",
+      "store": "Target Store",
+      "expirationDate": "Expiration Date",
+      "image": "Deal Image",
+      "description": "Description"
+    },
+    "eventForm": {
+      "title": "Event Title",
+      "date": "Event Date",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Main Atrium",
+      "banner": "Event Banner",
+      "description": "Description"
+    }
   },
   "common": {
     "loading": "Loading...",
     "error": "Error",
     "retry": "Retry",
-    "close": "Close"
+    "close": "Close",
+    "preview": "Preview",
+    "map": "Map",
+    "fullscreen": "Fullscreen"
   }
 }

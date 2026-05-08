@@ -9,22 +9,20 @@ import {
   PiClockDuotone,
   PiMagnifyingGlassBold
 } from 'react-icons/pi';
-import { Category } from '../types';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const CATEGORIES: Category[] = [
-  'Electronics', 'Fashion', 'Groceries', 'Household', 'Kitchenware', 'Furniture', 'Appliances', 'Bags & Luggage'
-];
-
 const StoresPage = () => {
   const { t } = useTranslation();
+  const categories: string[] = [
+    t('stores.categories.electronics'), t('stores.categories.fashion'), t('stores.categories.groceries'), t('stores.categories.household'), t('stores.categories.kitchenware'), t('stores.categories.furniture'), t('stores.categories.appliances'), t('stores.categories.bagsLuggage')
+  ];
   const [stores, setStores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('q') || '';
   const [search, setSearch] = useState(initialSearch);
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>(t('stores.categories.all'));
 
   useEffect(() => {
     const q = searchParams.get('q');
@@ -50,7 +48,7 @@ const StoresPage = () => {
     return stores.filter(store => {
       const matchesSearch = store.name.toLowerCase().includes(search.toLowerCase()) || 
                           store.description.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = selectedCategory === 'All' || store.category === selectedCategory;
+      const matchesCategory = selectedCategory === t('stores.categories.all') || store.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }, [search, selectedCategory, stores]);
@@ -90,12 +88,12 @@ const StoresPage = () => {
       {/* Category Pills */}
       <div className="flex flex-wrap md:flex-nowrap gap-3 overflow-x-auto no-scrollbar pb-2">
         <button
-          onClick={() => setSelectedCategory('All')}
-          className={`cem-pill whitespace-nowrap ${selectedCategory === 'All' ? 'active' : ''}`}
+          onClick={() => setSelectedCategory(t('stores.categories.all'))}
+          className={`cem-pill whitespace-nowrap ${selectedCategory === t('stores.categories.all') ? 'active' : ''}`}
         >
           {t('stores.allStores')}
         </button>
-        {CATEGORIES.map(cat => (
+        {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
@@ -194,7 +192,7 @@ const StoresPage = () => {
             <p className="text-muted-text max-w-sm mx-auto font-medium">{t('stores.noStoresSubtitle')}</p>
           </div>
           <button 
-            onClick={() => {setSearch(''); setSelectedCategory('All');}}
+            onClick={() => {setSearch(''); setSelectedCategory(t('stores.categories.all'));}}
             className="cem-btn-outline px-10 italic"
           >
             {t('stores.clearAllFilters')}

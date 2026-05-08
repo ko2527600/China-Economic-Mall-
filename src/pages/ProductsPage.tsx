@@ -3,15 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Search, Filter, ShoppingCart, Tag, ChevronRight, Package, Grid, List, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Category } from '../types';
-
-const CATEGORIES: Category[] = [
-  'Household', 'Electronics', 'Bags & Luggage', 'Furniture', 
-  'Groceries', 'Kitchenware', 'Fashion'
-];
 
 const ProductsPage = () => {
   const { t } = useTranslation();
+  const categories: string[] = [
+    t('products.categories.household'), t('products.categories.electronics'), t('products.categories.bagsLuggage'), t('products.categories.furniture'),
+    t('products.categories.groceries'), t('products.categories.kitchenware'), t('products.categories.fashion')
+  ];
   const [products, setProducts] = useState<any[]>([]);
   const [stores, setStores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -107,7 +105,7 @@ const ProductsPage = () => {
         >
           {t('products.allProducts')}
         </button>
-        {CATEGORIES.map(cat => (
+        {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}

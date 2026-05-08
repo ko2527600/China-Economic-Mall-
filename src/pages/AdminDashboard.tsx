@@ -30,12 +30,14 @@ const ImageUploadField = ({
   name, 
   defaultValue = '', 
   multiple = false,
+  uploadLabel = 'Upload',
   onImagesChange
 }: { 
   label: string, 
   name: string, 
   defaultValue?: string | string[], 
   multiple?: boolean,
+  uploadLabel?: string,
   onImagesChange?: (urls: string[]) => void
 }) => {
   const [previews, setPreviews] = useState<string[]>(
@@ -83,7 +85,7 @@ const ImageUploadField = ({
       <div className="flex flex-wrap gap-4 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl min-h-[120px]">
         {previews.map((url, idx) => (
           <div key={idx} className="relative w-20 h-20 rounded-xl overflow-hidden group shadow-md">
-            <img src={url} className="w-full h-full object-cover" alt="Preview" />
+            <img src={url} className="w-full h-full object-cover" alt={t('common.preview')} />
             <button 
               type="button"
               onClick={() => removeImage(idx)}
@@ -101,7 +103,7 @@ const ImageUploadField = ({
             ) : (
               <>
                 <Upload size={20} className="text-slate-400 group-hover:text-primary transition-colors" />
-                <span className="text-[8px] font-black uppercase text-slate-400 mt-1">Upload</span>
+                <span className="text-[8px] font-black uppercase text-slate-400 mt-1">{uploadLabel}</span>
               </>
             )}
             <input 
@@ -382,8 +384,8 @@ const AdminDashboard = () => {
             <span className="font-display font-black text-2xl text-primary leading-none translate-y-[-1px]">C</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-bold text-lg text-white leading-tight">Admin Console</span>
-            <span className="text-[9px] font-body font-black uppercase tracking-[0.3em] text-secondary">Economic Mall</span>
+            <span className="font-display font-bold text-lg text-white leading-tight">{t('admin.adminConsole')}</span>
+            <span className="text-[9px] font-body font-black uppercase tracking-[0.3em] text-secondary">{t('admin.economicMall')}</span>
           </div>
         </div>
 
@@ -438,7 +440,7 @@ const AdminDashboard = () => {
                {activeTab === 'events' && t('admin.manageEvents')}
                {activeTab === 'settings' && t('admin.siteSettings')}
             </h2>
-            <p className="text-slate-400 text-sm font-medium">{t('nav.products') === '商品' ? '实时管理和监控商城运营。' : 'Manage and monitor mall operations in real-time.'}</p>
+            <p className="text-slate-400 text-sm font-medium">{t('admin.manageDesc')}</p>
           </div>
           
           <div className="flex gap-4">
@@ -458,13 +460,13 @@ const AdminDashboard = () => {
               onClick={seedData}
               className="bg-white border-2 border-slate-200 text-primary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2"
             >
-               <LayoutDashboard size={16} /> Seed Data
+               <LayoutDashboard size={16} /> {t('admin.seedData')}
              </button>
              <button 
               onClick={handleReset}
               className="bg-rose-50 border-2 border-rose-200 text-rose-600 px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-rose-600 hover:text-white transition-all flex items-center gap-2"
             >
-               <Trash2 size={16} /> Clear All Data
+               <Trash2 size={16} /> {t('admin.clearAllData')}
              </button>
              <button 
               onClick={() => {
@@ -474,7 +476,7 @@ const AdminDashboard = () => {
               }}
               className="bg-primary text-white px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/10"
             >
-               <Plus size={16} /> New Store
+               <Plus size={16} /> {t('admin.newStore')}
              </button>
              <button 
               onClick={() => {
@@ -484,7 +486,7 @@ const AdminDashboard = () => {
               }}
               className="bg-secondary text-primary px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-secondary/20 hover:scale-105 transition-all flex items-center gap-2"
             >
-               <Plus size={16} /> New Product
+               <Plus size={16} /> {t('admin.newProduct')}
              </button>
              <button 
               onClick={() => {
@@ -494,7 +496,7 @@ const AdminDashboard = () => {
               }}
               className="bg-accent text-white px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all flex items-center gap-2"
             >
-               <Plus size={16} /> New Deal
+               <Plus size={16} /> {t('admin.newDeal')}
              </button>
              <button 
               onClick={() => {
@@ -504,7 +506,7 @@ const AdminDashboard = () => {
               }}
               className="bg-white border-2 border-slate-900 text-slate-900 px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white transition-all flex items-center gap-2"
             >
-               <Plus size={16} /> New Event
+               <Plus size={16} /> {t('admin.newEvent')}
              </button>
           </div>
         </header>
@@ -513,22 +515,22 @@ const AdminDashboard = () => {
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <StoreIcon className="text-accent mb-4" size={32} />
-                <h3 className="font-black uppercase tracking-widest text-xs text-slate-400 mb-1">Active Stores</h3>
+                <h3 className="font-black uppercase tracking-widest text-xs text-slate-400 mb-1">{t('admin.activeStores')}</h3>
                 <p className="text-4xl font-black italic">{stores.length}</p>
                 <div className="h-1 w-12 bg-accent mt-4 rounded-full"></div>
               </div>
               <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <ShoppingBag className="text-secondary mb-4" size={32} />
-                <h3 className="font-black uppercase tracking-widest text-xs text-slate-400 mb-1">Active Products</h3>
+                <h3 className="font-black uppercase tracking-widest text-xs text-slate-400 mb-1">{t('admin.activeProducts')}</h3>
                 <p className="text-4xl font-black italic">{products.length}</p>
                 <div className="h-1 w-12 bg-secondary mt-4 rounded-full"></div>
               </div>
               <div className="bg-primary p-8 rounded-[2.5rem] text-white shadow-xl">
                 <LayoutDashboard className="text-accent mb-4" size={32} />
-                <h3 className="font-black uppercase tracking-widest text-xs text-white/50 mb-1">System Status</h3>
-                <p className="text-2xl font-black uppercase tracking-tighter">Connected</p>
-                <p className="text-[10px] font-black uppercase text-accent tracking-widest mt-2 italic">Database: Prisma/PostgreSQL</p>
-                <p className="text-[10px] font-black uppercase text-secondary tracking-widest mt-1 italic">Storage: Cloudinary Persistent</p>
+                <h3 className="font-black uppercase tracking-widest text-xs text-white/50 mb-1">{t('admin.systemStatus')}</h3>
+                <p className="text-2xl font-black uppercase tracking-tighter">{t('admin.connected')}</p>
+                <p className="text-[10px] font-black uppercase text-accent tracking-widest mt-2 italic">{t('admin.dbInfo')}</p>
+                <p className="text-[10px] font-black uppercase text-secondary tracking-widest mt-1 italic">{t('admin.storageInfo')}</p>
               </div>
            </div>
         )}
@@ -564,10 +566,10 @@ const AdminDashboard = () => {
                       <td className="px-8 py-6">
                          {store.isFeatured ? (
                             <span className="text-accent flex items-center gap-1 text-[10px] font-black uppercase tracking-widest">
-                              <Star size={12} fill="currentColor" /> Featured
+                              <Star size={12} fill="currentColor" /> {t('admin.featured')}
                             </span>
                          ) : (
-                            <span className="text-slate-300 text-[10px] font-black uppercase tracking-widest">Standard</span>
+                            <span className="text-slate-300 text-[10px] font-black uppercase tracking-widest">{t('admin.standard')}</span>
                          )}
                       </td>
                       <td className="px-8 py-6">
@@ -746,25 +748,26 @@ const AdminDashboard = () => {
             <div className="space-y-12">
               {/* Hero Section */}
               <div className="space-y-6">
-                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Hero Section</h3>
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">{t('admin.form.heroSection')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Hero Title</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.heroTitle')}</label>
                     <input name="heroTitle" defaultValue={config.heroTitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Hero Subtitle</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.heroSubtitle')}</label>
                     <input name="heroSubtitle" defaultValue={config.heroSubtitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Hero Description</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.heroDescription')}</label>
                     <textarea name="heroDescription" defaultValue={config.heroDescription} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[100px]" />
                   </div>
                   <div className="md:col-span-2">
                     <ImageUploadField 
-                      label="Hero Background Video" 
+                      label={t('admin.form.heroVideo')} 
                       name="heroVideo" 
-                      defaultValue={config.heroVideo} 
+                      defaultValue={config.heroVideo}
+                      uploadLabel={t('admin.upload')} 
                     />
                   </div>
                 </div>
@@ -772,25 +775,26 @@ const AdminDashboard = () => {
 
               {/* Promotions Section */}
               <div className="space-y-6">
-                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Promotion Banner</h3>
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">{t('admin.form.promoBanner')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promo Title</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.promoTitle')}</label>
                     <input name="promoTitle" defaultValue={config.promoTitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promo Subtitle</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.promoSubtitle')}</label>
                     <input name="promoSubtitle" defaultValue={config.promoSubtitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promo Discount (e.g. 40%)</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.promoDiscount')}</label>
                     <input name="promoDiscount" defaultValue={config.promoDiscount} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="md:col-span-2">
                     <ImageUploadField 
-                      label="Promotion Banner Image" 
+                      label={t('admin.form.promoImage')} 
                       name="promoImage" 
-                      defaultValue={config.promoImage} 
+                      defaultValue={config.promoImage}
+                      uploadLabel={t('admin.upload')} 
                     />
                   </div>
                 </div>
@@ -798,14 +802,14 @@ const AdminDashboard = () => {
 
               {/* Loyalty Section */}
               <div className="space-y-6">
-                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Loyalty Program</h3>
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">{t('admin.form.loyaltyProgram')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Loyalty Title</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.loyaltyTitle')}</label>
                     <input name="loyaltyTitle" defaultValue={config.loyaltyTitle} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Loyalty Description</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.loyaltyDescription')}</label>
                     <textarea name="loyaltyDescription" defaultValue={config.loyaltyDescription} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[100px]" />
                   </div>
                 </div>
@@ -813,18 +817,18 @@ const AdminDashboard = () => {
 
               {/* Contact Info */}
               <div className="space-y-6">
-                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">Contact & Info</h3>
+                <h3 className="text-xl font-black uppercase tracking-tight italic border-b border-slate-100 pb-4">{t('admin.form.contactInfo')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Phone Number</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.phone')}</label>
                     <input name="contactPhone" defaultValue={config.contactPhone} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Opening Hours</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.hours')}</label>
                     <input name="openingHours" defaultValue={config.openingHours} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                   <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Address</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.form.address')}</label>
                     <input name="contactAddress" defaultValue={config.contactAddress} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                   </div>
                 </div>
@@ -833,7 +837,7 @@ const AdminDashboard = () => {
 
             <div className="mt-12 pt-8 border-t border-slate-100">
                <button type="submit" className="w-full bg-primary text-white py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 active:scale-95">
-                  <Save size={20} className="text-secondary" /> Save Site Settings
+                  <Save size={20} className="text-secondary" /> {t('admin.form.saveSettings')}
                </button>
             </div>
           </form>
@@ -857,13 +861,13 @@ const AdminDashboard = () => {
               <div className="bg-slate-50 p-8 border-b border-slate-100 sticky top-0 z-20 flex items-center justify-between">
                 <div>
                   <h3 className="text-2xl font-black uppercase tracking-tighter italic">
-                    {currentEdit ? 'Edit' : 'Create New'} {
-                      modalType === 'store' ? 'Store' : 
-                      modalType === 'product' ? 'Product' : 
-                      modalType === 'promotion' ? 'Promotion' : 'Event'
+                    {currentEdit ? t('admin.modal.edit') : t('admin.modal.createNew')} {' '}{
+                      modalType === 'store' ? t('admin.modal.store') : 
+                      modalType === 'product' ? t('admin.modal.product') : 
+                      modalType === 'promotion' ? t('admin.modal.promotion') : t('admin.modal.event')
                     }
                   </h3>
-                  <p className="text-xs font-bold uppercase text-slate-400 tracking-widest mt-1">Fill in the details below</p>
+                  <p className="text-xs font-bold uppercase text-slate-400 tracking-widest mt-1">{t('admin.modal.fillDetails')}</p>
                 </div>
                 <button 
                   onClick={() => setIsModalOpen(false)}
@@ -878,150 +882,156 @@ const AdminDashboard = () => {
                   {modalType === 'store' ? (
                     <>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Store Name</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.storeForm.name')}</label>
                         <input name="name" required defaultValue={currentEdit?.name} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Category</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.storeForm.category')}</label>
                         <select name="category" defaultValue={currentEdit?.category || 'Electronics'} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold appearance-none">
-                           <option>Electronics</option>
-                           <option>Fashion</option>
-                           <option>Household</option>
-                           <option>Groceries</option>
-                           <option>Furniture</option>
+                           <option>{t('admin.storeForm.categories.electronics')}</option>
+                           <option>{t('admin.storeForm.categories.fashion')}</option>
+                           <option>{t('admin.storeForm.categories.household')}</option>
+                           <option>{t('admin.storeForm.categories.groceries')}</option>
+                           <option>{t('admin.storeForm.categories.furniture')}</option>
                         </select>
                       </div>
                       <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.storeForm.description')}</label>
                         <textarea name="description" defaultValue={currentEdit?.description} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[100px]" />
                       </div>
                       <ImageUploadField 
-                        label="Store Logo" 
+                        label={t('admin.storeForm.logo')} 
                         name="logo" 
-                        defaultValue={currentEdit?.logo} 
+                        defaultValue={currentEdit?.logo}
+                        uploadLabel={t('admin.upload')} 
                       />
                       <ImageUploadField 
-                        label="Main Store Image" 
+                        label={t('admin.storeForm.mainImage')} 
                         name="image" 
-                        defaultValue={currentEdit?.image} 
+                        defaultValue={currentEdit?.image}
+                        uploadLabel={t('admin.upload')} 
                       />
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Location</label>
-                        <input name="location" defaultValue={currentEdit?.location} placeholder="e.g. Ground Floor, Shop 12" className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.storeForm.location')}</label>
+                        <input name="location" defaultValue={currentEdit?.location} placeholder={t('admin.storeForm.locationPlaceholder')} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Phone</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.storeForm.phone')}</label>
                         <input name="phone" defaultValue={currentEdit?.phone} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="md:col-span-2">
                         <ImageUploadField 
-                          label="Store Gallery (Multiple)" 
+                          label={t('admin.storeForm.gallery')} 
                           name="gallery" 
                           multiple={true}
-                          defaultValue={currentEdit?.gallery} 
+                          defaultValue={currentEdit?.gallery}
+                          uploadLabel={t('admin.upload')} 
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Operating Hours</label>
-                        <input name="hours" defaultValue={currentEdit?.hours} placeholder="8:00 AM - 10:00 PM" className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.storeForm.hours')}</label>
+                        <input name="hours" defaultValue={currentEdit?.hours} placeholder={t('admin.storeForm.hoursPlaceholder')} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex items-center gap-4 px-2">
                          <input type="checkbox" name="isFeatured" id="isFeatured" defaultChecked={currentEdit?.isFeatured} className="w-6 h-6 rounded-lg text-accent focus:ring-accent accent-accent" />
-                         <label htmlFor="isFeatured" className="text-xs font-black uppercase tracking-widest text-primary">Feature this store on home page</label>
+                         <label htmlFor="isFeatured" className="text-xs font-black uppercase tracking-widest text-primary">{t('admin.storeForm.featured')}</label>
                       </div>
                     </>
                   ) : modalType === 'product' ? (
                     <>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Product Name</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.productForm.name')}</label>
                         <input name="name" required defaultValue={currentEdit?.name} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Price (e.g. 4,500)</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.productForm.price')}</label>
                         <div className="relative">
                           <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-accent text-lg">₵</span>
                           <input name="price" required defaultValue={currentEdit?.price?.replace('₵', '')} className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-12 pr-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Store</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.productForm.store')}</label>
                         <select name="storeId" required defaultValue={currentEdit?.storeId} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold appearance-none">
                            {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                         </select>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Category</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.productForm.category')}</label>
                         <select name="category" defaultValue={currentEdit?.category || 'Electronics'} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold appearance-none">
-                           <option>Electronics</option>
-                           <option>Fashion</option>
-                           <option>Household</option>
-                           <option>Groceries</option>
+                           <option>{t('admin.productForm.categories.electronics')}</option>
+                           <option>{t('admin.productForm.categories.fashion')}</option>
+                           <option>{t('admin.productForm.categories.household')}</option>
+                           <option>{t('admin.productForm.categories.groceries')}</option>
                         </select>
                       </div>
                       <div className="md:col-span-2">
                         <ImageUploadField 
-                          label="Product Images (Select multiple for bulk upload)" 
+                          label={t('admin.productForm.images')} 
                           name="image" 
                           multiple={true}
-                          defaultValue={currentEdit?.image} 
+                          defaultValue={currentEdit?.image}
+                          uploadLabel={t('admin.upload')} 
                         />
                       </div>
                       <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.productForm.description')}</label>
                         <textarea name="description" defaultValue={currentEdit?.description} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[80px]" />
                       </div>
                     </>
                   ) : modalType === 'promotion' ? (
                     <>
                       <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Promotion Title</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.promotionForm.title')}</label>
                         <input name="title" required defaultValue={currentEdit?.title} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Target Store</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.promotionForm.store')}</label>
                         <select name="storeId" required defaultValue={currentEdit?.storeId} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold appearance-none">
                            {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                         </select>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Expiration Date</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.promotionForm.expirationDate')}</label>
                         <input type="date" name="expirationDate" required defaultValue={currentEdit?.expirationDate ? new Date(currentEdit.expirationDate).toISOString().split('T')[0] : ''} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="md:col-span-2">
                         <ImageUploadField 
-                          label="Deal Image" 
+                          label={t('admin.promotionForm.image')} 
                           name="image" 
-                          defaultValue={currentEdit?.image} 
+                          defaultValue={currentEdit?.image}
+                          uploadLabel={t('admin.upload')} 
                         />
                       </div>
                       <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.promotionForm.description')}</label>
                         <textarea name="description" defaultValue={currentEdit?.description} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[80px]" />
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Event Title</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.eventForm.title')}</label>
                         <input name="title" required defaultValue={currentEdit?.title} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Event Date</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.eventForm.date')}</label>
                         <input type="date" name="date" required defaultValue={currentEdit?.date ? new Date(currentEdit.date).toISOString().split('T')[0] : ''} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Location</label>
-                        <input name="location" required defaultValue={currentEdit?.location} placeholder="e.g. Main Atrium" className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.eventForm.location')}</label>
+                        <input name="location" required defaultValue={currentEdit?.location} placeholder={t('admin.eventForm.locationPlaceholder')} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold" />
                       </div>
                       <div className="md:col-span-2">
                         <ImageUploadField 
-                          label="Event Banner" 
+                          label={t('admin.eventForm.banner')} 
                           name="image" 
-                          defaultValue={currentEdit?.image} 
+                          defaultValue={currentEdit?.image}
+                          uploadLabel={t('admin.upload')} 
                         />
                       </div>
                       <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Description</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{t('admin.eventForm.description')}</label>
                         <textarea name="description" defaultValue={currentEdit?.description} className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-accent transition-all font-bold min-h-[80px]" />
                       </div>
                     </>
@@ -1030,7 +1040,7 @@ const AdminDashboard = () => {
 
                 <div className="mt-12">
                    <button type="submit" className="w-full bg-primary text-white py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 active:scale-95">
-                      <Save size={20} className="text-secondary" /> Save Changes
+                      <Save size={20} className="text-secondary" /> {t('admin.modal.saveChanges')}
                    </button>
                 </div>
               </form>

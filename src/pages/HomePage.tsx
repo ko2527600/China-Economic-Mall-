@@ -63,12 +63,12 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const categories = [
-    { name: t('nav.products') === '商品' ? '电子产品' : 'Electronics', icon: PiDeviceMobile },
-    { name: t('nav.products') === '商品' ? '时尚服饰' : 'Fashion', icon: PiTShirt },
-    { name: t('nav.products') === '商品' ? '食品杂货' : 'Groceries', icon: PiBasket },
-    { name: t('nav.products') === '商品' ? '家居用品' : 'Home', icon: PiHouse },
-    { name: t('nav.products') === '商品' ? '厨房用具' : 'Kitchen', icon: PiCookingPot },
-    { name: t('nav.products') === '商品' ? '家具' : 'Furniture', icon: PiArmchair },
+    { name: t('home.categories.electronics'), icon: PiDeviceMobile },
+    { name: t('home.categories.fashion'), icon: PiTShirt },
+    { name: t('home.categories.groceries'), icon: PiBasket },
+    { name: t('home.categories.home'), icon: PiHouse },
+    { name: t('home.categories.kitchen'), icon: PiCookingPot },
+    { name: t('home.categories.furniture'), icon: PiArmchair },
   ];
 
   useEffect(() => {
@@ -106,11 +106,11 @@ const HomePage = () => {
   ];
 
   const mallVideos = [
-    { id: 'v1', src: '/Mall 1.mp4', title: t('nav.products') === '商品' ? '商城全景' : 'Grand Mall Tour' },
-    { id: 'v2', src: '/Mall 2.mp4', title: t('nav.products') === '商品' ? '豪华走廊' : 'Luxury Aisles' },
-    { id: 'v3', src: '/Mall 3.mp4', title: t('nav.products') === '商品' ? '现代外观' : 'Modern Facade' },
-    { id: 'v4', src: '/Mall 4.mp4', title: t('nav.products') === '商品' ? '精英店铺' : 'Elite Stores' },
-    { id: 'v5', src: '/Mall 5.mp4', title: t('nav.products') === '商品' ? '购物氛围' : 'Shopping Vibes' }
+    { id: 'v1', src: '/Mall 1.mp4', title: t('home.videos.grandTour') },
+    { id: 'v2', src: '/Mall 2.mp4', title: t('home.videos.luxuryAisles') },
+    { id: 'v3', src: '/Mall 3.mp4', title: t('home.videos.modernFacade') },
+    { id: 'v4', src: '/Mall 4.mp4', title: t('home.videos.eliteStores') },
+    { id: 'v5', src: '/Mall 5.mp4', title: t('home.videos.shoppingVibes') }
   ];
 
   const [activeVideo, setActiveVideo] = React.useState<string | null>(null);
@@ -165,7 +165,7 @@ const HomePage = () => {
             <span className="cem-section-label mb-4">{config?.heroSubtitle || t('home.sectionLabel')}</span>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black leading-[1.1] tracking-tighter mb-6 uppercase italic min-h-[3em]">
               <Typewriter
-                text={config?.heroTitle ? config.heroTitle.replace(/ /g, '\n') : "China\nEconomic\nMall"}
+                text={config?.heroTitle ? config.heroTitle.replace(/ /g, '\n') : t('home.heroTitle')}
                 delay={150}
               />
             </h1>
@@ -189,7 +189,7 @@ const HomePage = () => {
               {[
                 { val: '500+', lab: t('home.stats.stores') },
                 { val: '10K+', lab: t('home.stats.products') },
-                { val: t('nav.products') === '商品' ? '每日' : 'Daily', lab: t('home.stats.hotDeals') }
+                { val: t('home.stats.daily'), lab: t('home.stats.hotDeals') }
               ].map((stat, i) => (
                 <motion.div
                   key={stat.lab}
@@ -221,7 +221,7 @@ const HomePage = () => {
                   <motion.img
                     key={currentHeroImage}
                     src={heroImages[currentHeroImage]}
-                    alt="China Economics Mall"
+                    alt={t('home.heroAlt')}
                     initial={{ opacity: 0, scale: 1.1 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
@@ -238,7 +238,7 @@ const HomePage = () => {
               <div className="absolute bottom-6 left-6 flex items-center gap-3">
                 <span className="cem-badge-gold">{t('home.nowOpen')}</span>
                 <span className="text-[10px] text-body-text/60 font-black uppercase tracking-widest bg-white/5 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                  Darkuman circle
+                  {t('home.locationBadge')}
                 </span>
               </div>
 
@@ -375,7 +375,7 @@ const HomePage = () => {
               </div>
               <div className="p-8 bg-elevated-surface relative border-t border-border-color">
                 <div className="absolute -top-12 right-8 w-24 h-24 bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center border-2 border-secondary rotate-6 group-hover:rotate-0 transition-transform">
-                  <span className="text-[10px] font-black text-primary uppercase">SAVE</span>
+                  <span className="text-[10px] font-black text-primary uppercase">{t('home.promoSave')}</span>
                   <span className="text-3xl font-black text-primary tracking-tighter">{config?.promoDiscount || "40%"}</span>
                 </div>
                 <h3 className="text-body-text font-display font-bold text-2xl mb-2 uppercase tracking-tight">{promo.title}</h3>

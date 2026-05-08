@@ -116,10 +116,10 @@ const Navbar = () => {
           <button
             onClick={toggleLang}
             className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-border-color hover:border-primary transition-all text-xs font-bold"
-            title={i18n.language === 'en' ? 'Switch to Chinese' : '切换回英文'}
+            title={i18n.language === 'en' ? t('nav.switchToChinese') : t('nav.switchToEnglish')}
           >
             <span className="text-base">{i18n.language === 'en' ? '🇨🇳' : '🇬🇧'}</span>
-            <span>{i18n.language === 'en' ? '中文' : 'EN'}</span>
+            <span>{i18n.language === 'en' ? t('nav.zh') : t('nav.en')}</span>
           </button>
         </div>
       </nav>
@@ -144,7 +144,7 @@ const Navbar = () => {
             className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-color text-xs font-bold"
           >
             <span className="text-sm">{i18n.language === 'en' ? '🇨🇳' : '🇬🇧'}</span>
-            <span>{i18n.language === 'en' ? '中文' : 'EN'}</span>
+            <span>{i18n.language === 'en' ? t('nav.zh') : t('nav.en')}</span>
           </button>
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
